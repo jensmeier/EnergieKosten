@@ -1,0 +1,116 @@
+{
+    "elements": [
+        {
+            "type": "Label",
+            "caption": "Energie & Kosten – V1 BUILD1. Die bestehenden Skripte bleiben unverändert und können parallel weiterlaufen."
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Quellen",
+            "expanded": true,
+            "items": [
+                {
+                    "type": "SelectVariable",
+                    "name": "GridImportVariable",
+                    "caption": "Netzbezug Gesamtzähler (Fronius)",
+                    "validVariableTypes": [
+                        1,
+                        2
+                    ]
+                },
+                {
+                    "type": "SelectVariable",
+                    "name": "FeedInVariable",
+                    "caption": "Einspeisung Gesamtzähler (Fronius)",
+                    "validVariableTypes": [
+                        1,
+                        2
+                    ]
+                },
+                {
+                    "type": "SelectVariable",
+                    "name": "HeaterPowerVariable",
+                    "caption": "Heizstab Leistung in W",
+                    "validVariableTypes": [
+                        1,
+                        2
+                    ]
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "AutoArchive",
+                    "caption": "Archivierung automatisch einschalten und als Zähler konfigurieren"
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Kosten / Heizöl",
+            "expanded": true,
+            "items": [
+                {
+                    "type": "NumberSpinner",
+                    "name": "GridPrice",
+                    "caption": "Strompreis Netzbezug",
+                    "digits": 4,
+                    "minimum": 0,
+                    "maximum": 5,
+                    "suffix": " €/kWh"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "FeedInPrice",
+                    "caption": "Einspeisevergütung",
+                    "digits": 4,
+                    "minimum": 0,
+                    "maximum": 5,
+                    "suffix": " €/kWh"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "OilEnergyKWhPerLiter",
+                    "caption": "Heizöl Energiegehalt",
+                    "digits": 2,
+                    "minimum": 1,
+                    "maximum": 20,
+                    "suffix": " kWh/L"
+                },
+                {
+                    "type": "NumberSpinner",
+                    "name": "BoilerEfficiencyPercent",
+                    "caption": "Kesselwirkungsgrad",
+                    "digits": 1,
+                    "minimum": 10,
+                    "maximum": 100,
+                    "suffix": " %"
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "Kachel",
+            "expanded": true,
+            "items": [
+                {
+                    "type": "NumberSpinner",
+                    "name": "CycleSeconds",
+                    "caption": "Automatischer Wechsel Heute → Monat → Jahr",
+                    "minimum": 3,
+                    "maximum": 60,
+                    "suffix": " s"
+                }
+            ]
+        },
+        {
+            "type": "Label",
+            "caption": "Hinweis: Die Fronius-Gesamtzähler werden entsprechend deinem bisherigen Skript als Wh interpretiert und intern in kWh umgerechnet. Das neue Heizstab-Archiv beginnt mit Installation dieses Moduls."
+        }
+    ],
+    "actions": [
+        {
+            "type": "Button",
+            "caption": "Kachel jetzt aktualisieren",
+            "onClick": "EK_Refresh($id);"
+        }
+    ]
+}

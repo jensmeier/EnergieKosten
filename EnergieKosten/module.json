@@ -1,0 +1,14 @@
+{
+    "id": "{216FA58A-ED9E-4590-A30E-466AD87AC8EF}",
+    "name": "Energie Kosten",
+    "type": 3,
+    "vendor": "Eigene Module",
+    "aliases": [
+        "Energie & Kosten"
+    ],
+    "url": "",
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "EK"
+}

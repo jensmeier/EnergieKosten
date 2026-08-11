@@ -1,0 +1,15 @@
+ENERGIE & KOSTEN – KURZINSTALLATION (Raspberry Pi / IP-Symcon 9.0)
+
+1) Datensicherung erstellen.
+2) Ordner "EnergieKosten" nach /var/lib/symcon/modules/ kopieren.
+3) Prüfen:
+   /var/lib/symcon/modules/EnergieKosten/library.json
+   /var/lib/symcon/modules/EnergieKosten/EnergieKosten/module.php
+4) Symcon neu starten:
+   sudo /etc/init.d/symcon restart
+5) Konsole -> Instanz hinzufügen -> Hersteller "Eigene Module" -> "Energie Kosten".
+6) Standard-IDs prüfen: 46689 / 49541 / 47596.
+7) Änderungen übernehmen.
+8) Instanz in der Kachelvisualisierung platzieren.
+
+Bestehende Solar-/Heizstab-Skripte während der Testphase NICHT löschen.
