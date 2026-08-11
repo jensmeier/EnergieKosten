@@ -1,0 +1,174 @@
+<style>
+:root {
+    color-scheme: light dark;
+    --ek-bg:#f5f7fa; --ek-card:#ffffff; --ek-text:#18202a; --ek-muted:#6b7480;
+    --ek-border:rgba(24,32,42,.12); --ek-grid:#d9534f; --ek-feed:#2f9e62;
+    --ek-heat:#e28b2d; --ek-accent:#3478f6; --ek-track:rgba(128,128,128,.18);
+}
+@media (prefers-color-scheme: dark) {
+    :root { --ek-bg:#171a1f; --ek-card:#21252b; --ek-text:#f3f5f7; --ek-muted:#a6adb7; --ek-border:rgba(255,255,255,.11); --ek-track:rgba(255,255,255,.10); }
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ek-text);background:var(--ek-bg)}
+.ek-page{width:100%;padding:16px 18px 24px}
+.ek-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:12px}
+.ek-headline{font-size:20px;font-weight:800}.ek-sub{font-size:12px;color:var(--ek-muted);margin-top:3px}
+.ek-card{background:var(--ek-card);border:1px solid var(--ek-border);border-radius:14px;padding:14px}
+.ek-chart-card{padding:14px 14px 12px}.ek-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ek-muted);margin-bottom:7px}.ek-legend span{display:flex;align-items:center;gap:6px}.ek-legend i{display:inline-block;width:10px;height:10px;border-radius:3px}
+.ek-chart{width:100%;height:300px;display:flex;align-items:center;justify-content:center}.ek-chart svg{width:100%;height:100%;display:block}.ek-empty{font-size:13px;color:var(--ek-muted)}
+.ek-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:8px}.ek-tab{border:1px solid var(--ek-border);background:transparent;color:var(--ek-text);border-radius:9px;padding:8px 4px;cursor:pointer;font-size:12px}.ek-tab.active{background:var(--ek-accent);border-color:var(--ek-accent);color:white}.ek-tab small{display:block;font-size:9px;opacity:.82;margin-top:1px}
+.ek-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}.ek-stat-title{font-size:14px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:7px}.ek-dot{width:10px;height:10px;border-radius:50%;display:inline-block}.grid{background:var(--ek-grid)}.feed{background:var(--ek-feed)}.heat{background:var(--ek-heat)}
+.ek-stat-table{width:100%;border-collapse:collapse;font-size:12px}.ek-stat-table td{padding:6px 0;border-top:1px solid var(--ek-border);vertical-align:top}.ek-stat-table td:last-child{text-align:right;font-weight:700}.ek-stat-table small{display:block;color:var(--ek-muted);font-weight:400;margin-top:1px}
+.ek-forecast{margin-top:12px}.ek-f-title{font-size:14px;font-weight:800;margin-bottom:9px}.ek-forecast-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.ek-metric-label{font-size:12px;color:var(--ek-muted)}.ek-big{font-size:25px;font-weight:800;margin-top:1px}.ek-muted{color:var(--ek-muted);font-size:12px}.ek-bar{height:10px;border-radius:99px;background:var(--ek-track);overflow:hidden;margin:7px 0 4px}.ek-bar>span{display:block;height:100%;border-radius:99px;background:var(--ek-accent)}.ek-balance{font-size:18px;font-weight:800;margin-top:8px}.ek-note{margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid var(--ek-border);color:var(--ek-muted);font-size:12px}
+@media(max-width:860px){.ek-stats{grid-template-columns:1fr}.ek-forecast-grid{grid-template-columns:1fr}.ek-chart{height:245px}.ek-page{padding:12px}.ek-headline{font-size:18px}}
+@media(max-width:480px){.ek-tabs{gap:4px}.ek-tab{font-size:11px;padding:7px 2px}.ek-chart{height:220px}.ek-card{padding:11px}}
+</style>
+
+<div class="ek-page">
+    <div class="ek-head">
+        <div>
+            <div class="ek-headline">Verbrauch, Einspeisung &amp; Heizstab</div>
+            <div class="ek-sub" id="updatedText">—</div>
+        </div>
+    </div>
+
+    <div class="ek-card ek-chart-card">
+        <div class="ek-legend">
+            <span><i style="background:var(--ek-grid)"></i> Netzbezug</span>
+            <span><i style="background:var(--ek-feed)"></i> Einspeisung</span>
+        </div>
+        <div class="ek-chart" id="chart"></div>
+        <div class="ek-tabs">
+            <button class="ek-tab" data-range="day">Tag<small>Stunden</small></button>
+            <button class="ek-tab" data-range="week">Woche<small>Mo–heute</small></button>
+            <button class="ek-tab active" data-range="month">Monat<small>letzte 30 Tage</small></button>
+            <button class="ek-tab" data-range="year">Jahr<small>Monate</small></button>
+        </div>
+    </div>
+
+    <div class="ek-stats">
+        <div class="ek-card"><div class="ek-stat-title"><span class="ek-dot grid"></span>Netzbezug</div><table class="ek-stat-table" id="gridTable"></table></div>
+        <div class="ek-card"><div class="ek-stat-title"><span class="ek-dot feed"></span>Einspeisung</div><table class="ek-stat-table" id="feedTable"></table></div>
+        <div class="ek-card"><div class="ek-stat-title"><span class="ek-dot heat"></span>Heizstab / Heizöl</div><table class="ek-stat-table" id="heatTable"></table></div>
+    </div>
+
+    <div class="ek-card ek-forecast">
+        <div class="ek-f-title">Jahreshochrechnung &amp; Deckung</div>
+        <div class="ek-forecast-grid">
+            <div>
+                <div class="ek-metric-label">Energetische Deckung</div>
+                <div class="ek-big" id="energyCoverage">—</div>
+                <div class="ek-bar"><span id="energyBar" style="width:0%"></span></div>
+                <div class="ek-muted" id="energyForecastText">—</div>
+            </div>
+            <div>
+                <div class="ek-metric-label">Finanzielle Deckung</div>
+                <div class="ek-big" id="financialCoverage">—</div>
+                <div class="ek-bar"><span id="financialBar" style="width:0%"></span></div>
+                <div class="ek-muted" id="financialForecastText">—</div>
+                <div class="ek-balance" id="forecastBalance"></div>
+            </div>
+        </div>
+        <div class="ek-note" id="forecastNote">—</div>
+    </div>
+
+    <div class="ek-note" id="coverageNote">—</div>
+</div>
+
+<script>
+const ekData = __DETAIL_DATA__;
+let activeRange = 'month';
+const validNumber = n => n !== null && n !== '' && Number.isFinite(Number(n));
+const euro = n => validNumber(n) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €' : '—';
+const kwh = n => validNumber(n) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' kWh' : '—';
+const liter = n => validNumber(n) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' L Öl' : '—';
+const pct = n => validNumber(n) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:0,maximumFractionDigits:0}) + ' %' : '—';
+const fmtDate = ts => ts ? new Date(ts*1000).toLocaleDateString('de-DE') : 'noch keine Archivdaten';
+
+function rowsFor(type){
+    const periods=[['Tag','today'],['Woche','week'],['Monat','month'],['Jahr','year']];
+    return periods.map(([label,key])=>{
+        const v=ekData.summary?.[key]?.[type] || {};
+        const second=type==='heater' ? liter(v.oilLiter)+' gespart' : euro(v.euro);
+        return `<tr><td>${label}</td><td>${kwh(v.kwh)}<small>${second}</small></td></tr>`;
+    }).join('');
+}
+
+function renderTables(){
+    if(!ekData?.ok)return;
+    document.getElementById('gridTable').innerHTML=rowsFor('grid');
+    document.getElementById('feedTable').innerHTML=rowsFor('feed');
+    document.getElementById('heatTable').innerHTML=rowsFor('heater');
+}
+
+function renderChart(){
+    const host=document.getElementById('chart');
+    const data=ekData?.charts?.[activeRange] || [];
+    if(!ekData?.ok || !data.length){host.innerHTML='<div class="ek-empty">Für diesen Zeitraum sind noch keine geloggten Daten vorhanden.</div>';return;}
+    const W=1100,H=300,left=54,right=12,top=10,bottom=44,plotW=W-left-right,plotH=H-top-bottom;
+    const maxVal=Math.max(.1,...data.flatMap(d=>[Number(d.grid)||0,Number(d.feed)||0]));
+    const count=data.length,groupW=plotW/count,barW=Math.max(2,Math.min(18,groupW*.34));
+    let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Netzbezug und Einspeisung im gewählten Zeitraum">`;
+    for(let i=0;i<=4;i++){
+        const y=top+plotH*i/4,val=maxVal*(1-i/4);
+        svg+=`<line x1="${left}" y1="${y}" x2="${W-right}" y2="${y}" stroke="var(--ek-border)" stroke-width="1"/>`;
+        svg+=`<text x="${left-7}" y="${y+4}" text-anchor="end" font-size="10" fill="var(--ek-muted)">${val.toLocaleString('de-DE',{maximumFractionDigits:1})}</text>`;
+    }
+    const labelEvery=count>24?5:(count>14?3:1);
+    data.forEach((d,i)=>{
+        const x=left+groupW*i+groupW/2,gh=(Number(d.grid)||0)/maxVal*plotH,fh=(Number(d.feed)||0)/maxVal*plotH;
+        svg+=`<rect x="${x-barW-1}" y="${top+plotH-gh}" width="${barW}" height="${gh}" rx="2" fill="var(--ek-grid)"><title>Netzbezug ${d.label}: ${kwh(d.grid)}</title></rect>`;
+        svg+=`<rect x="${x+1}" y="${top+plotH-fh}" width="${barW}" height="${fh}" rx="2" fill="var(--ek-feed)"><title>Einspeisung ${d.label}: ${kwh(d.feed)}</title></rect>`;
+        if(i%labelEvery===0 || i===count-1)svg+=`<text x="${x}" y="${H-18}" text-anchor="middle" font-size="9" fill="var(--ek-muted)">${d.label}</text>`;
+    });
+    svg+=`<text x="8" y="14" font-size="10" fill="var(--ek-muted)">kWh</text></svg>`;
+    host.innerHTML=svg;
+}
+
+function monthNames(nums){const m=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];return(nums||[]).map(n=>m[n-1]).join(', ')}
+function renderForecast(){
+    if(!ekData?.ok)return;
+    const f=ekData.forecast||{},a=ekData.actualCoverage||{};
+    const ev=f.complete?f.energyCoveragePercent:a.energyPercent;
+    const fv=f.complete?f.financialCoveragePercent:a.financialPercent;
+    document.getElementById('energyCoverage').textContent=pct(ev);
+    document.getElementById('financialCoverage').textContent=pct(fv);
+    document.getElementById('energyBar').style.width=Math.min(100,Math.max(0,Number(ev)||0))+'%';
+    document.getElementById('financialBar').style.width=Math.min(100,Math.max(0,Number(fv)||0))+'%';
+    if(f.complete){
+        document.getElementById('energyForecastText').textContent=`${kwh(f.feedKWh)} Einspeisung zu ${kwh(f.gridKWh)} Netzbezug`;
+        document.getElementById('financialForecastText').textContent=`${euro(f.feedEuro)} Vergütung zu ${euro(f.gridEuro)} Bezugskosten`;
+        const bal=Number(f.balanceEuro)||0;
+        document.getElementById('forecastBalance').textContent=(bal>=0?'+':'')+euro(bal)+' Prognose-Saldo';
+        const heater=validNumber(f.heaterKWh)?` Heizstab: ${kwh(f.heaterKWh)} → ca. ${liter(f.oilLiter)} gespart.`:'';
+        document.getElementById('forecastNote').textContent=`Saisonale Jahresprognose: ${f.quality}. Winter und Sommer werden monatsweise aus der vorhandenen Historie gelernt.${heater}`;
+    }else{
+        document.getElementById('energyForecastText').textContent='Bisherige Deckung im laufenden Jahr';
+        document.getElementById('financialForecastText').textContent='Bisherige finanzielle Deckung im laufenden Jahr';
+        const bal=Number(a.balanceEuro)||0;
+        document.getElementById('forecastBalance').textContent=(bal>=0?'+':'')+euro(bal)+' bisheriger Saldo';
+        document.getElementById('forecastNote').textContent=`Saisonale Jahreshochrechnung noch nicht belastbar. Es fehlen Vergleichsdaten für: ${monthNames(f.missingMonths)||'mehrere Monate'}. Es wird bewusst nicht Sommer × 12 gerechnet.`;
+    }
+}
+function renderCoverage(){
+    if(!ekData?.ok)return;
+    const c=ekData.coverage||{};const parts=[];
+    if(ekData.sourceMode)parts.push(`Summenquelle: ${ekData.sourceMode}`);
+    parts.push(`Netzbezug archiviert ab ${fmtDate(c.grid)}`);
+    parts.push(`Einspeisung ab ${fmtDate(c.feed)}`);
+    parts.push(`Heizstab-Historie ab ${fmtDate(c.heater)}`);
+    if(!c.last30Complete)parts.push('30-Tage-Diagramm zeigt nur den bereits geloggten Zeitraum.');
+    document.getElementById('coverageNote').textContent=parts.join(' · ');
+}
+function renderAll(){
+    if(!ekData?.ok){document.getElementById('chart').innerHTML='<div class="ek-empty">Keine Daten verfügbar.</div>';return;}
+    document.getElementById('updatedText').textContent='Aktualisiert: '+new Date(ekData.updated*1000).toLocaleString('de-DE');
+    renderChart();renderTables();renderForecast();renderCoverage();
+}
+document.querySelectorAll('.ek-tab').forEach(btn=>btn.addEventListener('click',()=>{
+    activeRange=btn.dataset.range;
+    document.querySelectorAll('.ek-tab').forEach(b=>b.classList.toggle('active',b===btn));
+    renderChart();
+}));
+renderAll();
+</script>

@@ -1,5 +1,16 @@
 # Changelog
 
+## V1 BUILD4
+- Autor JZCG.
+- Kleine Kachel: Netzbezug und Einspeisung zeigen Euro groß/fett, kWh kleiner darunter.
+- Heizstab zeigt kWh groß/fett und gesparte Liter Öl kleiner.
+- Automatische Größenanpassung per ResizeObserver; Hinweis verschwindet bei kleinen Kacheln.
+- Neue String-Variable „Energie Detail“ mit Webinhalt-Darstellung.
+- Antippen der kleinen Kachel öffnet jetzt die Detailvariable statt der Modulinstanz.
+- Detailansicht enthält Diagramm Tag/Woche/letzte 30 Tage/Jahr, Summen und saisonale Prognose.
+- Bestehende Alt-Skripte und Bestands-IDs bleiben unverändert.
+
+
 ## V1 BUILD3
 - Fehler behoben: Heute/Monat/Jahr zeigten den Fronius-Lebenszeitstand statt den Zeitraumverbrauch.
 - Vorhandene kWh-/Euro-Summen werden automatisch genutzt: Netzbezug, Einspeisung und Heizstab für Tag/Woche/Monat/Jahr.

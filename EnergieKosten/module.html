@@ -2,172 +2,120 @@
 :root {
     color-scheme: light dark;
     --ek-bg: #f5f7fa;
-    --ek-card: #ffffff;
     --ek-text: #18202a;
     --ek-muted: #6b7480;
     --ek-border: rgba(24,32,42,.12);
     --ek-grid: #d9534f;
     --ek-feed: #2f9e62;
     --ek-heat: #e28b2d;
-    --ek-accent: #3478f6;
-    --ek-track: rgba(128,128,128,.18);
 }
 @media (prefers-color-scheme: dark) {
     :root {
         --ek-bg: #171a1f;
-        --ek-card: #21252b;
         --ek-text: #f3f5f7;
         --ek-muted: #a6adb7;
         --ek-border: rgba(255,255,255,.11);
-        --ek-track: rgba(255,255,255,.10);
     }
 }
 * { box-sizing: border-box; }
-body { margin: 0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color: var(--ek-text); background: transparent; }
-.ek-wrap { width: 100%; height: 100%; min-height: 140px; background: var(--ek-bg); overflow: hidden; }
-.ek-compact { position: relative; height: 100%; min-height: 140px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
-.ek-detail { display: none; padding: 18px; min-height: 100%; }
-.ek-period { position:absolute; top:12px; right:14px; font-size:12px; color:var(--ek-muted); padding:4px 8px; border:1px solid var(--ek-border); border-radius:999px; }
-.ek-mini-grid { display:grid; grid-template-columns:1fr; gap:6px; flex:1; align-content:center; padding-top:22px; }
-.ek-mini-row { display:grid; grid-template-columns: 22px 1fr auto; align-items:baseline; gap:6px; }
+html, body { margin:0; width:100%; height:100%; overflow:hidden; }
+body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--ek-text); background:transparent; }
+.ek-wrap { position:relative; width:100%; height:100%; min-width:0; min-height:0; background:var(--ek-bg); overflow:hidden; }
+.ek-compact {
+    position:relative; width:100%; height:100%; min-width:0; min-height:0;
+    padding:40px 14px 10px; display:flex; flex-direction:column;
+}
+.ek-period {
+    position:absolute; top:34px; right:12px;
+    font-size:11px; line-height:1; color:var(--ek-muted);
+    padding:4px 8px; border:1px solid var(--ek-border); border-radius:999px;
+    white-space:nowrap; pointer-events:none;
+}
+.ek-mini-grid {
+    display:grid; grid-template-columns:1fr; gap:7px; flex:1; align-content:center;
+    min-height:0; padding-top:8px;
+}
+.ek-mini-row {
+    display:grid; grid-template-columns:18px minmax(0,1fr) minmax(92px,auto);
+    align-items:center; gap:6px; min-width:0;
+}
 .ek-dot { width:10px; height:10px; border-radius:50%; justify-self:center; }
-.ek-dot.grid { background:var(--ek-grid); } .ek-dot.feed { background:var(--ek-feed); } .ek-dot.heat { background:var(--ek-heat); }
-.ek-mini-label { font-size:13px; color:var(--ek-muted); }
-.ek-mini-value { font-size:14px; font-weight:700; text-align:right; white-space:nowrap; }
-.ek-mini-sub { font-size:11px; color:var(--ek-muted); text-align:right; }
-.ek-open { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; border:0; }
-.ek-foot { font-size:10px; color:var(--ek-muted); text-align:center; }
-
-.ek-detail-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:14px; }
-.ek-detail-title { font-size:20px; font-weight:800; }
-.ek-detail-sub { font-size:12px; color:var(--ek-muted); margin-top:3px; }
-.ek-refresh { border:1px solid var(--ek-border); background:var(--ek-card); color:var(--ek-text); border-radius:10px; padding:8px 10px; cursor:pointer; }
-.ek-card { background:var(--ek-card); border:1px solid var(--ek-border); border-radius:14px; padding:14px; }
-.ek-chart-card { padding:14px; }
-.ek-legend { display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--ek-muted); margin-bottom:8px; }
-.ek-legend span { display:flex; align-items:center; gap:6px; }
-.ek-legend i { display:inline-block; width:10px; height:10px; border-radius:3px; }
-.ek-chart { width:100%; height:270px; }
-.ek-chart svg { width:100%; height:100%; display:block; }
-.ek-tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-top:10px; }
-.ek-tab { border:1px solid var(--ek-border); background:transparent; color:var(--ek-text); border-radius:9px; padding:8px 4px; cursor:pointer; font-size:12px; }
-.ek-tab.active { background:var(--ek-accent); border-color:var(--ek-accent); color:white; }
-.ek-tab small { display:block; font-size:9px; opacity:.8; margin-top:1px; }
-.ek-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:12px; }
-.ek-stat-title { font-size:14px; font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:7px; }
-.ek-stat-table { width:100%; border-collapse:collapse; font-size:12px; }
-.ek-stat-table td { padding:6px 0; border-top:1px solid var(--ek-border); vertical-align:top; }
-.ek-stat-table td:last-child { text-align:right; font-weight:700; }
-.ek-stat-table small { display:block; color:var(--ek-muted); font-weight:400; margin-top:1px; }
-.ek-forecast { margin-top:12px; }
-.ek-forecast-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.ek-f-title { font-size:14px; font-weight:800; margin-bottom:8px; }
-.ek-big { font-size:25px; font-weight:800; }
-.ek-muted { color:var(--ek-muted); font-size:12px; }
-.ek-bar { height:10px; border-radius:99px; background:var(--ek-track); overflow:hidden; margin:7px 0 4px; }
-.ek-bar > span { display:block; height:100%; border-radius:99px; background:var(--ek-accent); }
-.ek-balance { font-size:18px; font-weight:800; margin-top:8px; }
-.ek-quality { display:inline-block; border:1px solid var(--ek-border); border-radius:999px; padding:3px 8px; font-size:11px; margin-top:8px; }
-.ek-note { margin-top:12px; padding:10px 12px; border-radius:10px; border:1px solid var(--ek-border); color:var(--ek-muted); font-size:12px; }
-.ek-error { padding:20px; color:var(--ek-text); }
-
-@media (min-width: 700px) and (min-height: 500px) {
-    .ek-compact { display:none; }
-    .ek-detail { display:block; }
+.ek-dot.grid { background:var(--ek-grid); }
+.ek-dot.feed { background:var(--ek-feed); }
+.ek-dot.heat { background:var(--ek-heat); }
+.ek-mini-label {
+    font-size:13px; color:var(--ek-muted); min-width:0; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis;
 }
-@media (max-width: 860px) {
-    .ek-stats { grid-template-columns:1fr; }
-    .ek-forecast-grid { grid-template-columns:1fr; }
-    .ek-chart { height:230px; }
+.ek-value-box { min-width:0; text-align:right; }
+.ek-mini-main {
+    font-size:16px; line-height:1.12; font-weight:800; white-space:nowrap;
+    font-variant-numeric:tabular-nums;
 }
+.ek-mini-sub {
+    margin-top:2px; font-size:10px; line-height:1.1; color:var(--ek-muted); white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+}
+.ek-foot { min-height:12px; font-size:9px; color:var(--ek-muted); text-align:center; white-space:nowrap; }
+.ek-open { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; border:0; z-index:5; }
+
+/* Auto-Größe: Klassen werden mit ResizeObserver anhand der echten Kachelgröße gesetzt. */
+.ek-wrap.ek-sm .ek-compact { padding:37px 10px 7px; }
+.ek-wrap.ek-sm .ek-period { top:31px; right:9px; font-size:10px; padding:3px 7px; }
+.ek-wrap.ek-sm .ek-mini-grid { gap:5px; padding-top:7px; }
+.ek-wrap.ek-sm .ek-mini-row { grid-template-columns:16px minmax(0,1fr) minmax(82px,auto); gap:4px; }
+.ek-wrap.ek-sm .ek-dot { width:9px; height:9px; }
+.ek-wrap.ek-sm .ek-mini-label { font-size:11px; }
+.ek-wrap.ek-sm .ek-mini-main { font-size:14px; }
+.ek-wrap.ek-sm .ek-mini-sub { font-size:9px; }
+.ek-wrap.ek-sm .ek-foot { display:none; }
+
+.ek-wrap.ek-xs .ek-compact { padding:33px 7px 4px; }
+.ek-wrap.ek-xs .ek-period { top:28px; right:6px; font-size:9px; padding:2px 6px; }
+.ek-wrap.ek-xs .ek-mini-grid { gap:3px; padding-top:5px; }
+.ek-wrap.ek-xs .ek-mini-row { grid-template-columns:13px minmax(0,1fr) minmax(70px,auto); gap:3px; }
+.ek-wrap.ek-xs .ek-dot { width:8px; height:8px; }
+.ek-wrap.ek-xs .ek-mini-label { font-size:10px; }
+.ek-wrap.ek-xs .ek-mini-main { font-size:12px; }
+.ek-wrap.ek-xs .ek-mini-sub { font-size:8px; margin-top:1px; }
+.ek-wrap.ek-xs .ek-foot { display:none; }
 </style>
 
 <div class="ek-wrap" id="ekWrap">
-    <section class="ek-compact" id="compactView">
+    <section class="ek-compact">
         <div class="ek-period" id="compactPeriod">Heute</div>
         <div class="ek-mini-grid">
-            <div class="ek-mini-row"><span class="ek-dot grid"></span><span class="ek-mini-label">Netzbezug</span><span><div class="ek-mini-value" id="cGrid">—</div><div class="ek-mini-sub" id="cGridEuro">—</div></span></div>
-            <div class="ek-mini-row"><span class="ek-dot feed"></span><span class="ek-mini-label">Einspeisung</span><span><div class="ek-mini-value" id="cFeed">—</div><div class="ek-mini-sub" id="cFeedEuro">—</div></span></div>
-            <div class="ek-mini-row"><span class="ek-dot heat"></span><span class="ek-mini-label">Heizstab</span><span><div class="ek-mini-value" id="cHeat">—</div><div class="ek-mini-sub" id="cOil">—</div></span></div>
-        </div>
-        <div class="ek-foot" id="compactFoot">Antippen für Diagramm & Prognose</div>
-        <button class="ek-open" id="openDetails" aria-label="Energie-Details öffnen"></button>
-    </section>
-
-    <section class="ek-detail" id="detailView">
-        <div class="ek-detail-head">
-            <div>
-                <div class="ek-detail-title">Energie & Kosten</div>
-                <div class="ek-detail-sub" id="updatedText">—</div>
+            <div class="ek-mini-row">
+                <span class="ek-dot grid"></span>
+                <span class="ek-mini-label">Netzbezug</span>
+                <span class="ek-value-box"><div class="ek-mini-main" id="cGridEuro">—</div><div class="ek-mini-sub" id="cGrid">—</div></span>
             </div>
-            <button class="ek-refresh" id="refreshButton">↻ Aktualisieren</button>
-        </div>
-
-        <div class="ek-card ek-chart-card">
-            <div class="ek-legend">
-                <span><i style="background:var(--ek-grid)"></i> Netzbezug</span>
-                <span><i style="background:var(--ek-feed)"></i> Einspeisung</span>
+            <div class="ek-mini-row">
+                <span class="ek-dot feed"></span>
+                <span class="ek-mini-label">Einspeisung</span>
+                <span class="ek-value-box"><div class="ek-mini-main" id="cFeedEuro">—</div><div class="ek-mini-sub" id="cFeed">—</div></span>
             </div>
-            <div class="ek-chart" id="chart"></div>
-            <div class="ek-tabs">
-                <button class="ek-tab" data-range="day">Tag<small>Stunden</small></button>
-                <button class="ek-tab" data-range="week">Woche<small>Mo–heute</small></button>
-                <button class="ek-tab active" data-range="month">Monat<small>letzte 30 Tage</small></button>
-                <button class="ek-tab" data-range="year">Jahr<small>Monate</small></button>
+            <div class="ek-mini-row">
+                <span class="ek-dot heat"></span>
+                <span class="ek-mini-label">Heizstab</span>
+                <span class="ek-value-box"><div class="ek-mini-main" id="cHeat">—</div><div class="ek-mini-sub" id="cOil">—</div></span>
             </div>
         </div>
-
-        <div class="ek-stats">
-            <div class="ek-card">
-                <div class="ek-stat-title"><span class="ek-dot grid"></span> Netzbezug</div>
-                <table class="ek-stat-table" id="gridTable"></table>
-            </div>
-            <div class="ek-card">
-                <div class="ek-stat-title"><span class="ek-dot feed"></span> Einspeisung</div>
-                <table class="ek-stat-table" id="feedTable"></table>
-            </div>
-            <div class="ek-card">
-                <div class="ek-stat-title"><span class="ek-dot heat"></span> Heizstab / Heizöl</div>
-                <table class="ek-stat-table" id="heatTable"></table>
-            </div>
-        </div>
-
-        <div class="ek-card ek-forecast">
-            <div class="ek-f-title">Jahreshochrechnung & Deckung</div>
-            <div class="ek-forecast-grid">
-                <div>
-                    <div class="ek-muted">Energetische Deckung</div>
-                    <div class="ek-big" id="energyCoverage">—</div>
-                    <div class="ek-bar"><span id="energyBar" style="width:0%"></span></div>
-                    <div class="ek-muted" id="energyForecastText">—</div>
-                </div>
-                <div>
-                    <div class="ek-muted">Finanzielle Deckung</div>
-                    <div class="ek-big" id="financialCoverage">—</div>
-                    <div class="ek-bar"><span id="financialBar" style="width:0%"></span></div>
-                    <div class="ek-muted" id="financialForecastText">—</div>
-                    <div class="ek-balance" id="forecastBalance"></div>
-                </div>
-            </div>
-            <div class="ek-note" id="forecastNote">—</div>
-        </div>
-
-        <div class="ek-note" id="coverageNote">—</div>
+        <div class="ek-foot">Antippen für Diagramm &amp; Prognose</div>
+        <button class="ek-open" id="openDetails" aria-label="Energie-Diagramm und Prognose öffnen"></button>
     </section>
 </div>
 
 <script>
-const EK_INSTANCE_ID = __INSTANCE_ID__;
+const EK_DETAIL_ID = __DETAIL_ID__;
 let ekData = __INITIAL_DATA__;
 let compactIndex = 0;
-let activeRange = 'month';
 let compactTimer = null;
 
-const euro = n => Number.isFinite(Number(n)) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €' : '—';
-const kwh = n => Number.isFinite(Number(n)) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' kWh' : '—';
-const liter = n => Number.isFinite(Number(n)) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' L Öl' : '—';
-const pct = n => Number.isFinite(Number(n)) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:0,maximumFractionDigits:0}) + ' %' : '—';
-const fmtDate = ts => ts ? new Date(ts*1000).toLocaleDateString('de-DE') : 'noch keine Archivdaten';
+const validNumber = n => n !== null && n !== '' && Number.isFinite(Number(n));
+const euro = n => validNumber(n) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €' : '—';
+const kwh = n => validNumber(n) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' kWh' : '—';
+const liter = n => validNumber(n) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' L Öl gespart' : '—';
 
 function periodConfig() {
     return [
@@ -178,22 +126,23 @@ function periodConfig() {
 }
 
 function renderCompact() {
-    if (!ekData || !ekData.ok) {
-        document.getElementById('compactFoot').textContent = ekData?.error || 'Noch keine Daten';
-        return;
-    }
+    if (!ekData || !ekData.ok || !ekData.summary) return;
     const periods = periodConfig();
     const p = periods[compactIndex % periods.length];
     const s = ekData.summary[p.key];
-    document.getElementById('compactPeriod').textContent = p.label;
-    document.getElementById('cGrid').textContent = kwh(s.grid.kwh);
-    document.getElementById('cGridEuro').textContent = euro(s.grid.euro);
-    document.getElementById('cFeed').textContent = kwh(s.feed.kwh);
-    document.getElementById('cFeedEuro').textContent = euro(s.feed.euro);
-    document.getElementById('cHeat').textContent = kwh(s.heater.kwh);
-    document.getElementById('cOil').textContent = liter(s.heater.oilLiter) + ' gespart';
+    if (!s) return;
 
-    document.getElementById('compactFoot').textContent = 'Antippen für Diagramm & Prognose';
+    document.getElementById('compactPeriod').textContent = p.label;
+
+    // Netzbezug/Einspeisung: Euro bewusst groß und fett, kWh kleiner darunter.
+    document.getElementById('cGridEuro').textContent = euro(s.grid.euro);
+    document.getElementById('cGrid').textContent = kwh(s.grid.kwh);
+    document.getElementById('cFeedEuro').textContent = euro(s.feed.euro);
+    document.getElementById('cFeed').textContent = kwh(s.feed.kwh);
+
+    // Heizstab nach Auswahl 1A: kWh groß, Liter Öl kleiner darunter.
+    document.getElementById('cHeat').textContent = kwh(s.heater.kwh);
+    document.getElementById('cOil').textContent = liter(s.heater.oilLiter);
 }
 
 function restartCompactTimer() {
@@ -205,152 +154,40 @@ function restartCompactTimer() {
     }, sec * 1000);
 }
 
-function rowsFor(type) {
-    const periods = [
-        ['Tag','today'],
-        ['Woche','week'],
-        ['Monat','month'],
-        ['Jahr','year']
-    ];
-    return periods.map(([label,key]) => {
-        const v = ekData.summary[key][type];
-        let second = '';
-        if (type === 'heater') second = liter(v.oilLiter) + ' gespart';
-        else second = euro(v.euro);
-        return `<tr><td>${label}</td><td>${kwh(v.kwh)}<small>${second}</small></td></tr>`;
-    }).join('');
-}
-
-function renderTables() {
-    if (!ekData?.ok) return;
-    document.getElementById('gridTable').innerHTML = rowsFor('grid');
-    document.getElementById('feedTable').innerHTML = rowsFor('feed');
-    document.getElementById('heatTable').innerHTML = rowsFor('heater');
-}
-
-function renderChart() {
-    const host = document.getElementById('chart');
-    if (!ekData?.ok) { host.innerHTML = '<div class="ek-muted">Keine Daten</div>'; return; }
-    const data = ekData.charts?.[activeRange] || [];
-    if (!data.length) { host.innerHTML = '<div class="ek-muted">Für diesen Zeitraum sind noch keine Archivdaten vorhanden.</div>'; return; }
-
-    const W = 1000, H = 270, left = 52, right = 12, top = 10, bottom = 42;
-    const plotW = W-left-right, plotH = H-top-bottom;
-    const maxVal = Math.max(0.1, ...data.flatMap(d => [Number(d.grid)||0, Number(d.feed)||0]));
-    const count = data.length;
-    const groupW = plotW / count;
-    const barW = Math.max(2, Math.min(16, groupW * 0.34));
-    let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Netzbezug und Einspeisung im gewählten Zeitraum">`;
-
-    for (let i=0;i<=4;i++) {
-        const y = top + plotH * i/4;
-        const val = maxVal * (1-i/4);
-        svg += `<line x1="${left}" y1="${y}" x2="${W-right}" y2="${y}" stroke="var(--ek-border)" stroke-width="1"/>`;
-        svg += `<text x="${left-7}" y="${y+4}" text-anchor="end" font-size="10" fill="var(--ek-muted)">${val.toLocaleString('de-DE',{maximumFractionDigits:1})}</text>`;
-    }
-
-    const labelEvery = count > 24 ? 5 : (count > 14 ? 3 : 1);
-    data.forEach((d,i) => {
-        const xCenter = left + groupW*i + groupW/2;
-        const gh = (Number(d.grid)||0)/maxVal*plotH;
-        const fh = (Number(d.feed)||0)/maxVal*plotH;
-        svg += `<rect x="${xCenter-barW-1}" y="${top+plotH-gh}" width="${barW}" height="${gh}" rx="2" fill="var(--ek-grid)"/>`;
-        svg += `<rect x="${xCenter+1}" y="${top+plotH-fh}" width="${barW}" height="${fh}" rx="2" fill="var(--ek-feed)"/>`;
-        if (i % labelEvery === 0 || i === count-1) {
-            svg += `<text x="${xCenter}" y="${H-18}" text-anchor="middle" font-size="9" fill="var(--ek-muted)">${d.label}</text>`;
-        }
-    });
-    svg += `<text x="8" y="14" font-size="10" fill="var(--ek-muted)">kWh</text></svg>`;
-    host.innerHTML = svg;
-}
-
-function monthNames(nums) {
-    const m = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-    return (nums||[]).map(n => m[n-1]).join(', ');
-}
-
-function renderForecast() {
-    if (!ekData?.ok) return;
-    const f = ekData.forecast;
-    const actual = ekData.actualCoverage;
-    const energyValue = f.complete ? f.energyCoveragePercent : actual.energyPercent;
-    const financeValue = f.complete ? f.financialCoveragePercent : actual.financialPercent;
-    document.getElementById('energyCoverage').textContent = pct(energyValue);
-    document.getElementById('financialCoverage').textContent = pct(financeValue);
-    document.getElementById('energyBar').style.width = Math.min(100, Math.max(0, Number(energyValue)||0)) + '%';
-    document.getElementById('financialBar').style.width = Math.min(100, Math.max(0, Number(financeValue)||0)) + '%';
-
-    if (f.complete) {
-        document.getElementById('energyForecastText').textContent = `${kwh(f.feedKWh)} Einspeisung zu ${kwh(f.gridKWh)} Netzbezug`;
-        document.getElementById('financialForecastText').textContent = `${euro(f.feedEuro)} Vergütung zu ${euro(f.gridEuro)} Bezugskosten`;
-        const bal = Number(f.balanceEuro)||0;
-        document.getElementById('forecastBalance').textContent = (bal >= 0 ? '+' : '') + euro(bal) + ' Prognose-Saldo';
-        let heater = '';
-        if (Number.isFinite(Number(f.heaterKWh))) heater = ` Heizstab: ${kwh(f.heaterKWh)} → ca. ${liter(f.oilLiter)} gespart.`;
-        document.getElementById('forecastNote').textContent = `Saisonale Jahresprognose: ${f.quality}. Winter und Sommer werden monatsweise aus der vorhandenen Historie gelernt.${heater}`;
-    } else {
-        document.getElementById('energyForecastText').textContent = 'Bisherige Deckung im laufenden Jahr';
-        document.getElementById('financialForecastText').textContent = 'Bisherige finanzielle Deckung im laufenden Jahr';
-        const bal = Number(actual.balanceEuro)||0;
-        document.getElementById('forecastBalance').textContent = (bal >= 0 ? '+' : '') + euro(bal) + ' bisheriger Saldo';
-        const missing = monthNames(f.missingMonths);
-        document.getElementById('forecastNote').textContent = `Saisonale Jahreshochrechnung noch nicht belastbar. Es fehlen Vergleichsdaten für: ${missing || 'mehrere Monate'}. Es wird bewusst nicht Sommer × 12 gerechnet.`;
-    }
-}
-
-function renderCoverage() {
-    if (!ekData?.ok) return;
-    const c = ekData.coverage;
-    const parts = [
-        `Netzbezug archiviert ab ${fmtDate(c.grid)}`,
-        `Einspeisung ab ${fmtDate(c.feed)}`,
-        `Heizstab-Historie ab ${fmtDate(c.heater)}`
-    ];
-    if (!c.last30Complete) parts.push('30-Tage-Diagramm derzeit nur soweit vorhanden, wie die geloggten Tageswerte zurückreichen.');
-    if (ekData.sourceMode) parts.unshift(`Summenquelle: ${ekData.sourceMode}`);
-    document.getElementById('coverageNote').textContent = parts.join(' · ');
-}
-
-function renderDetail() {
-    if (!ekData?.ok) {
-        document.getElementById('detailView').innerHTML = `<div class="ek-error">${ekData?.error || 'Keine Daten verfügbar.'}</div>`;
-        return;
-    }
-    document.getElementById('updatedText').textContent = 'Aktualisiert: ' + new Date(ekData.updated*1000).toLocaleString('de-DE');
-    renderChart();
-    renderTables();
-    renderForecast();
-    renderCoverage();
+function adaptToTileSize() {
+    const wrap = document.getElementById('ekWrap');
+    const w = wrap.clientWidth;
+    const h = wrap.clientHeight;
+    wrap.classList.remove('ek-sm','ek-xs');
+    if (w < 205 || h < 145) wrap.classList.add('ek-xs');
+    else if (w < 285 || h < 205) wrap.classList.add('ek-sm');
 }
 
 function renderAll() {
     renderCompact();
-    renderDetail();
     restartCompactTimer();
+    adaptToTileSize();
 }
 
 function handleMessage(data) {
     try {
         ekData = (typeof data === 'string') ? JSON.parse(data) : data;
     } catch (e) {
-        ekData = {ok:false, error:'Empfangene Visualisierungsdaten sind ungültig.'};
+        ekData = {ok:false};
     }
     renderAll();
 }
-
 window.handleMessage = handleMessage;
 
 document.getElementById('openDetails').addEventListener('click', () => {
-    if (typeof openObject === 'function') openObject(EK_INSTANCE_ID);
+    if (typeof openObject === 'function' && EK_DETAIL_ID > 0) openObject(EK_DETAIL_ID);
 });
-document.getElementById('refreshButton').addEventListener('click', () => {
-    if (typeof requestAction === 'function') requestAction('Refresh', true);
-});
-document.querySelectorAll('.ek-tab').forEach(btn => btn.addEventListener('click', () => {
-    activeRange = btn.dataset.range;
-    document.querySelectorAll('.ek-tab').forEach(b => b.classList.toggle('active', b === btn));
-    renderChart();
-}));
+
+if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(adaptToTileSize).observe(document.getElementById('ekWrap'));
+} else {
+    window.addEventListener('resize', adaptToTileSize);
+}
 
 renderAll();
 </script>

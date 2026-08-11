@@ -63,6 +63,20 @@ class EnergieKosten extends IPSModuleStrict
             $this->SetValue('HeaterTotalKWh', 0.0);
         }
 
+        $detailCreated = $this->RegisterVariableString(
+            'DetailHTML',
+            'Energie Detail',
+            [
+                'PRESENTATION' => VARIABLE_PRESENTATION_WEB_CONTENT,
+                'HTML_TYPE' => 0,
+                'PADDING' => true
+            ],
+            20
+        );
+        if ($detailCreated) {
+            $this->SetValue('DetailHTML', '<div style="padding:16px">Energie-Details werden geladen …</div>');
+        }
+
         $this->RegisterAttributeInteger('LastHeaterTimestamp', 0);
         $this->RegisterAttributeInteger('ArchiveConfiguredAt', 0);
 
@@ -141,14 +155,22 @@ class EnergieKosten extends IPSModuleStrict
     public function Refresh(): void
     {
         try {
+            $data = $this->BuildPayload();
             $payload = json_encode(
-                $this->BuildPayload(),
+                $data,
                 JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
             );
             if ($payload === false) {
                 throw new Exception('Visualisierungsdaten konnten nicht als JSON codiert werden.');
             }
+
+            // Kleine Modul-Kachel aktualisieren.
             $this->UpdateVisualizationValue($payload);
+
+            // Separate Webinhalt-Variable für die große Diagramm-/Prognoseansicht.
+            // Dadurch öffnet die kleine Kachel nicht mehr die Instanz mit "Heizstab Gesamt",
+            // sondern genau die von uns erzeugte Detailseite.
+            $this->SetValue('DetailHTML', $this->RenderDetailHTML($data));
         } catch (Throwable $e) {
             $this->SendDebug('Refresh', $e->getMessage(), 0);
         }
@@ -170,16 +192,35 @@ class EnergieKosten extends IPSModuleStrict
             return '<div>module.html konnte nicht geladen werden.</div>';
         }
 
+        $data = $this->BuildPayload();
         $json = json_encode(
-            $this->BuildPayload(),
+            $data,
             JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
         );
         if ($json === false) {
             $json = '{}';
         }
 
-        $html = str_replace('__INSTANCE_ID__', (string) $this->InstanceID, $html);
+        $html = str_replace('__DETAIL_ID__', (string) $this->GetIDForIdent('DetailHTML'), $html);
         return str_replace('__INITIAL_DATA__', $json, $html);
+    }
+
+    private function RenderDetailHTML(array $data): string
+    {
+        $html = file_get_contents(__DIR__ . '/detail.html');
+        if ($html === false) {
+            return '<div style="padding:16px">detail.html konnte nicht geladen werden.</div>';
+        }
+
+        $json = json_encode(
+            $data,
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        );
+        if ($json === false) {
+            $json = '{}';
+        }
+
+        return str_replace('__DETAIL_DATA__', $json, $html);
     }
 
     private function GetLegacyIDs(): array
