@@ -1,12 +1,12 @@
 {
     "id": "{D8669DB1-13FC-4AE2-8128-C657F3002BBE}",
-    "author": "OpenAI - erstellt fuer IP-Symcon 9.0",
+    "author": "JZCG",
     "name": "Energie Kosten",
     "url": "",
     "compatibility": {
         "version": "9.0"
     },
     "version": "1.0",
-    "build": 1,
+    "build": 2,
     "date": 1786429200
 }

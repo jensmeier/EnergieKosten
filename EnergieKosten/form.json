@@ -2,7 +2,7 @@
     "elements": [
         {
             "type": "Label",
-            "caption": "Energie & Kosten – V1 BUILD1. Die bestehenden Skripte bleiben unverändert und können parallel weiterlaufen."
+            "caption": "Energie & Kosten – V1 BUILD2. Die bestehenden Skripte bleiben unverändert und können parallel weiterlaufen."
         },
         {
             "type": "ExpansionPanel",

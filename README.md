@@ -1,6 +1,6 @@
 # Energie & Kosten – IP-Symcon 9.0
 
-Version 1.0 BUILD1 – 11.08.2026
+Version 1.0 BUILD2 – 11.08.2026
 
 ## Ziel
 Eine einzelne HTML-SDK-Kachel für Netzbezug, Einspeisung, Heizstab, Kosten, 30-Tage-Diagramm und saisonale Jahreshochrechnung.

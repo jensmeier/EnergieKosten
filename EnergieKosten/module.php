@@ -99,7 +99,19 @@ class EnergieKosten extends IPSModuleStrict
     public function Refresh(): void
     {
         try {
-            $this->UpdateVisualizationValue($this->BuildPayload());
+            // IP-Symcon 9.0 kann über UpdateVisualizationValue einfache Werte
+            // direkt übertragen. Komplexe Arrays/Objekte werden für die
+            // HTML-SDK-Nachricht als JSON-String codiert.
+            $payload = json_encode(
+                $this->BuildPayload(),
+                JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+            );
+
+            if ($payload === false) {
+                throw new Exception('Visualisierungsdaten konnten nicht als JSON codiert werden.');
+            }
+
+            $this->UpdateVisualizationValue($payload);
         } catch (Throwable $e) {
             $this->SendDebug('Refresh', $e->getMessage(), 0);
         }

@@ -338,7 +338,11 @@ function renderAll() {
 }
 
 function handleMessage(data) {
-    ekData = data;
+    try {
+        ekData = (typeof data === 'string') ? JSON.parse(data) : data;
+    } catch (e) {
+        ekData = {ok:false, error:'Empfangene Visualisierungsdaten sind ungültig.'};
+    }
     renderAll();
 }
 
