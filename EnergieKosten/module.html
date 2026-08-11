@@ -27,10 +27,8 @@ body { margin: 0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-
 .ek-wrap { width: 100%; height: 100%; min-height: 140px; background: var(--ek-bg); overflow: hidden; }
 .ek-compact { position: relative; height: 100%; min-height: 140px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 .ek-detail { display: none; padding: 18px; min-height: 100%; }
-.ek-title-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-.ek-title { font-size: 16px; font-weight: 700; }
-.ek-period { font-size:12px; color:var(--ek-muted); padding:4px 8px; border:1px solid var(--ek-border); border-radius:999px; }
-.ek-mini-grid { display:grid; grid-template-columns:1fr; gap:6px; flex:1; align-content:center; }
+.ek-period { position:absolute; top:12px; right:14px; font-size:12px; color:var(--ek-muted); padding:4px 8px; border:1px solid var(--ek-border); border-radius:999px; }
+.ek-mini-grid { display:grid; grid-template-columns:1fr; gap:6px; flex:1; align-content:center; padding-top:22px; }
 .ek-mini-row { display:grid; grid-template-columns: 22px 1fr auto; align-items:baseline; gap:6px; }
 .ek-dot { width:10px; height:10px; border-radius:50%; justify-self:center; }
 .ek-dot.grid { background:var(--ek-grid); } .ek-dot.feed { background:var(--ek-feed); } .ek-dot.heat { background:var(--ek-heat); }
@@ -86,10 +84,7 @@ body { margin: 0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-
 
 <div class="ek-wrap" id="ekWrap">
     <section class="ek-compact" id="compactView">
-        <div class="ek-title-row">
-            <div class="ek-title">⚡ Energie & Kosten</div>
-            <div class="ek-period" id="compactPeriod">Heute</div>
-        </div>
+        <div class="ek-period" id="compactPeriod">Heute</div>
         <div class="ek-mini-grid">
             <div class="ek-mini-row"><span class="ek-dot grid"></span><span class="ek-mini-label">Netzbezug</span><span><div class="ek-mini-value" id="cGrid">—</div><div class="ek-mini-sub" id="cGridEuro">—</div></span></div>
             <div class="ek-mini-row"><span class="ek-dot feed"></span><span class="ek-mini-label">Einspeisung</span><span><div class="ek-mini-value" id="cFeed">—</div><div class="ek-mini-sub" id="cFeedEuro">—</div></span></div>
@@ -198,11 +193,7 @@ function renderCompact() {
     document.getElementById('cHeat').textContent = kwh(s.heater.kwh);
     document.getElementById('cOil').textContent = liter(s.heater.oilLiter) + ' gespart';
 
-    let complete = true;
-    if (p.key === 'today') complete = ekData.coverage.todayComplete;
-    if (p.key === 'month') complete = ekData.coverage.monthComplete;
-    if (p.key === 'year') complete = ekData.coverage.yearComplete;
-    document.getElementById('compactFoot').textContent = complete ? 'Antippen für Diagramm & Prognose' : 'Teilwerte – Archiv läuft noch nicht über den ganzen Zeitraum';
+    document.getElementById('compactFoot').textContent = 'Antippen für Diagramm & Prognose';
 }
 
 function restartCompactTimer() {
@@ -313,9 +304,10 @@ function renderCoverage() {
     const parts = [
         `Netzbezug archiviert ab ${fmtDate(c.grid)}`,
         `Einspeisung ab ${fmtDate(c.feed)}`,
-        `Heizstab neu ab ${fmtDate(c.heater)}`
+        `Heizstab-Historie ab ${fmtDate(c.heater)}`
     ];
-    if (!c.last30Complete) parts.push('Das 30-Tage-Diagramm ist erst vollständig, wenn 30 Tage Archivdaten vorhanden sind.');
+    if (!c.last30Complete) parts.push('30-Tage-Diagramm derzeit nur soweit vorhanden, wie die geloggten Tageswerte zurückreichen.');
+    if (ekData.sourceMode) parts.unshift(`Summenquelle: ${ekData.sourceMode}`);
     document.getElementById('coverageNote').textContent = parts.join(' · ');
 }
 

@@ -9,6 +9,31 @@ class EnergieKosten extends IPSModuleStrict
     private const HEATER_MIN_POWER_W = 50.0;
     private const TIMER_MS = 60000;
 
+    // Vorhandene Bestandsvariablen aus den bisherigen Skripten.
+    // Sie werden nur gelesen, nicht verändert oder gelöscht.
+    private const GRID_KWH_DAY   = 15785;
+    private const GRID_KWH_WEEK  = 41184;
+    private const GRID_KWH_MONTH = 26464;
+    private const GRID_KWH_YEAR  = 28371;
+    private const GRID_EUR_DAY   = 24118;
+    private const GRID_EUR_WEEK  = 16333;
+    private const GRID_EUR_MONTH = 46005;
+    private const GRID_EUR_YEAR  = 24821;
+
+    private const FEED_KWH_DAY   = 56673;
+    private const FEED_KWH_WEEK  = 13694;
+    private const FEED_KWH_MONTH = 29885;
+    private const FEED_KWH_YEAR  = 37602;
+    private const FEED_EUR_DAY   = 44972;
+    private const FEED_EUR_WEEK  = 53087;
+    private const FEED_EUR_MONTH = 52169;
+    private const FEED_EUR_YEAR  = 13502;
+
+    private const HEAT_KWH_DAY   = 38341;
+    private const HEAT_KWH_WEEK  = 48338;
+    private const HEAT_KWH_MONTH = 32764;
+    private const HEAT_KWH_YEAR  = 39736;
+
     public function Create(): void
     {
         parent::Create();
@@ -66,21 +91,38 @@ class EnergieKosten extends IPSModuleStrict
             }
         }
 
+        // Bestehende Hilfswerte nur referenzieren, falls vorhanden.
+        foreach ($this->GetLegacyIDs() as $id) {
+            if ($this->IsNumericVariable($id)) {
+                $this->RegisterReference($id);
+            }
+        }
+
         $heaterTotalID = $this->GetIDForIdent('HeaterTotalKWh');
 
         if ($valid && $this->ReadPropertyBoolean('AutoArchive')) {
             $archiveID = $this->GetArchiveID();
             if ($archiveID > 0) {
-                $this->EnsureCounterArchive($archiveID, $gridID);
-                $this->EnsureCounterArchive($archiveID, $feedID);
+                // Bereits vorhandenes Logging nicht umkonfigurieren. BUILD2 hatte bei
+                // einem neu begonnenen Zählerarchiv den vorhandenen Gesamtstand als
+                // erste positive Differenz interpretiert. BUILD3 vermeidet das.
+                $this->EnsureLifetimeArchive($archiveID, $gridID);
+                $this->EnsureLifetimeArchive($archiveID, $feedID);
                 $this->EnsureCounterArchive($archiveID, $heaterTotalID);
+
+                // Für Diagramm / saisonale Historie reichen die bestehenden Tageszähler.
+                // Aggregationstyp dieser Reset-Variablen bleibt unverändert.
+                foreach ([self::GRID_KWH_DAY, self::FEED_KWH_DAY, self::HEAT_KWH_DAY] as $id) {
+                    if ($this->IsNumericVariable($id)) {
+                        $this->EnsureLoggingOnly($archiveID, $id);
+                    }
+                }
                 $this->WriteAttributeInteger('ArchiveConfiguredAt', time());
             } else {
                 $valid = false;
             }
         }
 
-        // Nach Konfigurationsänderungen nie rückwirkend Heizleistung hochrechnen.
         $this->WriteAttributeInteger('LastHeaterTimestamp', time());
         $this->SetTimerInterval('Tick', self::TIMER_MS);
         $this->SetStatus($valid ? 102 : 104);
@@ -99,18 +141,13 @@ class EnergieKosten extends IPSModuleStrict
     public function Refresh(): void
     {
         try {
-            // IP-Symcon 9.0 kann über UpdateVisualizationValue einfache Werte
-            // direkt übertragen. Komplexe Arrays/Objekte werden für die
-            // HTML-SDK-Nachricht als JSON-String codiert.
             $payload = json_encode(
                 $this->BuildPayload(),
                 JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
             );
-
             if ($payload === false) {
                 throw new Exception('Visualisierungsdaten konnten nicht als JSON codiert werden.');
             }
-
             $this->UpdateVisualizationValue($payload);
         } catch (Throwable $e) {
             $this->SendDebug('Refresh', $e->getMessage(), 0);
@@ -119,13 +156,11 @@ class EnergieKosten extends IPSModuleStrict
 
     public function RequestAction(string $Ident, mixed $Value): void
     {
-        switch ($Ident) {
-            case 'Refresh':
-                $this->Refresh();
-                break;
-            default:
-                throw new Exception('Invalid Ident: ' . $Ident);
+        if ($Ident === 'Refresh') {
+            $this->Refresh();
+            return;
         }
+        throw new Exception('Invalid Ident: ' . $Ident);
     }
 
     public function GetVisualizationTile(): string
@@ -135,9 +170,8 @@ class EnergieKosten extends IPSModuleStrict
             return '<div>module.html konnte nicht geladen werden.</div>';
         }
 
-        $payload = $this->BuildPayload();
         $json = json_encode(
-            $payload,
+            $this->BuildPayload(),
             JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
         );
         if ($json === false) {
@@ -145,8 +179,18 @@ class EnergieKosten extends IPSModuleStrict
         }
 
         $html = str_replace('__INSTANCE_ID__', (string) $this->InstanceID, $html);
-        $html = str_replace('__INITIAL_DATA__', $json, $html);
-        return $html;
+        return str_replace('__INITIAL_DATA__', $json, $html);
+    }
+
+    private function GetLegacyIDs(): array
+    {
+        return [
+            self::GRID_KWH_DAY, self::GRID_KWH_WEEK, self::GRID_KWH_MONTH, self::GRID_KWH_YEAR,
+            self::GRID_EUR_DAY, self::GRID_EUR_WEEK, self::GRID_EUR_MONTH, self::GRID_EUR_YEAR,
+            self::FEED_KWH_DAY, self::FEED_KWH_WEEK, self::FEED_KWH_MONTH, self::FEED_KWH_YEAR,
+            self::FEED_EUR_DAY, self::FEED_EUR_WEEK, self::FEED_EUR_MONTH, self::FEED_EUR_YEAR,
+            self::HEAT_KWH_DAY, self::HEAT_KWH_WEEK, self::HEAT_KWH_MONTH, self::HEAT_KWH_YEAR
+        ];
     }
 
     private function IsNumericVariable(int $id): bool
@@ -158,10 +202,36 @@ class EnergieKosten extends IPSModuleStrict
         return in_array((int) $variable['VariableType'], [VARIABLETYPE_INTEGER, VARIABLETYPE_FLOAT], true);
     }
 
+    private function SafeValue(int $id, float $fallback = 0.0): float
+    {
+        if (!$this->IsNumericVariable($id)) {
+            return $fallback;
+        }
+        return max(0.0, (float) GetValue($id));
+    }
+
     private function GetArchiveID(): int
     {
         $ids = IPS_GetInstanceListByModuleID(self::ARCHIVE_MODULE_GUID);
         return count($ids) > 0 ? (int) $ids[0] : 0;
+    }
+
+    private function EnsureLoggingOnly(int $archiveID, int $variableID): void
+    {
+        if (!AC_GetLoggingStatus($archiveID, $variableID)) {
+            AC_SetLoggingStatus($archiveID, $variableID, true);
+        }
+    }
+
+    private function EnsureLifetimeArchive(int $archiveID, int $variableID): void
+    {
+        $wasLogging = AC_GetLoggingStatus($archiveID, $variableID);
+        if (!$wasLogging) {
+            AC_SetLoggingStatus($archiveID, $variableID, true);
+            AC_SetAggregationType($archiveID, $variableID, 1);
+            AC_ReAggregateVariable($archiveID, $variableID);
+        }
+        // Wenn schon geloggt wurde, vorhandenen Aggregationstyp bewusst erhalten.
     }
 
     private function EnsureCounterArchive(int $archiveID, int $variableID): void
@@ -169,10 +239,8 @@ class EnergieKosten extends IPSModuleStrict
         if (!AC_GetLoggingStatus($archiveID, $variableID)) {
             AC_SetLoggingStatus($archiveID, $variableID, true);
         }
-
         if (AC_GetAggregationType($archiveID, $variableID) !== 1) {
             AC_SetAggregationType($archiveID, $variableID, 1);
-            // Laut Symcon-Dokumentation ist nach Änderung des Aggregationstyps eine Reaggregation erforderlich.
             AC_ReAggregateVariable($archiveID, $variableID);
         }
     }
@@ -193,11 +261,9 @@ class EnergieKosten extends IPSModuleStrict
 
         $elapsed = $now - $last;
         $this->WriteAttributeInteger('LastHeaterTimestamp', $now);
-
         if ($elapsed < 1) {
             return;
         }
-        // Keine Nachberechnung über längere Dienst-/Netzausfälle mit der aktuellen Leistung.
         if ($elapsed > 300) {
             $elapsed = 60;
         }
@@ -221,7 +287,7 @@ class EnergieKosten extends IPSModuleStrict
         $archiveID = $this->GetArchiveID();
         $gridID = $this->ReadPropertyInteger('GridImportVariable');
         $feedID = $this->ReadPropertyInteger('FeedInVariable');
-        $heaterID = $this->GetIDForIdent('HeaterTotalKWh');
+        $heaterTotalID = $this->GetIDForIdent('HeaterTotalKWh');
 
         $now = time();
         $todayStart = strtotime('today 00:00:00', $now);
@@ -248,57 +314,58 @@ class EnergieKosten extends IPSModuleStrict
         }
 
         $meta = $this->GetArchiveMetaMap($archiveID);
-        $coverage = [
-            'grid' => $this->FirstTimeFor($meta, $gridID),
-            'feed' => $this->FirstTimeFor($meta, $feedID),
-            'heater' => $this->FirstTimeFor($meta, $heaterID)
-        ];
+        $legacy = $this->HasLegacySummary();
+        $legacyGridFirst = $this->FirstTimeFor($meta, self::GRID_KWH_DAY);
+        $legacyFeedFirst = $this->FirstTimeFor($meta, self::FEED_KWH_DAY);
+        $legacyHeatFirst = $this->FirstTimeFor($meta, self::HEAT_KWH_DAY);
 
-        $hourGrid = $this->GetEnergySeries($archiveID, $gridID, 0, $todayStart, $now, self::FRONIUS_WH_PER_KWH, $coverage['grid']);
-        $hourFeed = $this->GetEnergySeries($archiveID, $feedID, 0, $todayStart, $now, self::FRONIUS_WH_PER_KWH, $coverage['feed']);
-        $hourHeat = $this->GetEnergySeries($archiveID, $heaterID, 0, $todayStart, $now, 1.0, $coverage['heater']);
+        // Historie bevorzugt aus den vorhandenen Tageszählern. Deren Tages-Maximum
+        // ist der echte Tagesverbrauch / die echte Tageseinspeisung vor dem Reset.
+        $dayGrid = $this->GetDailyTotalsFromResetVariable($archiveID, self::GRID_KWH_DAY, $last30Start, $now, $legacyGridFirst);
+        $dayFeed = $this->GetDailyTotalsFromResetVariable($archiveID, self::FEED_KWH_DAY, $last30Start, $now, $legacyFeedFirst);
+        $dayHeat = $this->GetDailyTotalsFromResetVariable($archiveID, self::HEAT_KWH_DAY, $last30Start, $now, $legacyHeatFirst);
 
-        $dayGrid = $this->GetEnergySeries($archiveID, $gridID, 1, $last30Start, $now, self::FRONIUS_WH_PER_KWH, $coverage['grid']);
-        $dayFeed = $this->GetEnergySeries($archiveID, $feedID, 1, $last30Start, $now, self::FRONIUS_WH_PER_KWH, $coverage['feed']);
-        $dayHeat = $this->GetEnergySeries($archiveID, $heaterID, 1, $last30Start, $now, 1.0, $coverage['heater']);
+        $historyGridDaily = $this->GetDailyTotalsFromResetVariable($archiveID, self::GRID_KWH_DAY, $historyStart, $now, $legacyGridFirst);
+        $historyFeedDaily = $this->GetDailyTotalsFromResetVariable($archiveID, self::FEED_KWH_DAY, $historyStart, $now, $legacyFeedFirst);
+        $historyHeatDaily = $this->GetDailyTotalsFromResetVariable($archiveID, self::HEAT_KWH_DAY, $historyStart, $now, $legacyHeatFirst);
 
-        $monthGrid = $this->GetEnergySeries($archiveID, $gridID, 3, $historyStart, $now, self::FRONIUS_WH_PER_KWH, $coverage['grid']);
-        $monthFeed = $this->GetEnergySeries($archiveID, $feedID, 3, $historyStart, $now, self::FRONIUS_WH_PER_KWH, $coverage['feed']);
-        $monthHeat = $this->GetEnergySeries($archiveID, $heaterID, 3, $historyStart, $now, 1.0, $coverage['heater']);
+        // Falls die bisherigen Tagesvariablen wider Erwarten nicht geloggt sind,
+        // auf Fronius-Gesamtzähler zurückfallen; erste Archivperiode mit Initialwert
+        // wird dabei bewusst übersprungen, damit kein 1.515/10.258-kWh-Sprung entsteht.
+        if (count($dayGrid) === 0) {
+            $dayGrid = $this->GetCounterAggregates($archiveID, $gridID, 1, $last30Start, $now, self::FRONIUS_WH_PER_KWH, $this->FirstTimeFor($meta, $gridID));
+        }
+        if (count($dayFeed) === 0) {
+            $dayFeed = $this->GetCounterAggregates($archiveID, $feedID, 1, $last30Start, $now, self::FRONIUS_WH_PER_KWH, $this->FirstTimeFor($meta, $feedID));
+        }
 
-        $today = [
-            'grid' => $this->SumSeries($hourGrid),
-            'feed' => $this->SumSeries($hourFeed),
-            'heater' => $this->SumSeries($hourHeat)
-        ];
-        $week = [
-            'grid' => $this->SumSeriesFrom($dayGrid, $weekStart),
-            'feed' => $this->SumSeriesFrom($dayFeed, $weekStart),
-            'heater' => $this->SumSeriesFrom($dayHeat, $weekStart)
-        ];
-        $last30 = [
-            'grid' => $this->SumSeries($dayGrid),
-            'feed' => $this->SumSeries($dayFeed),
-            'heater' => $this->SumSeries($dayHeat)
-        ];
-        $month = [
-            'grid' => $this->ValueForMonth($monthGrid, (int) date('Y', $now), (int) date('n', $now)),
-            'feed' => $this->ValueForMonth($monthFeed, (int) date('Y', $now), (int) date('n', $now)),
-            'heater' => $this->ValueForMonth($monthHeat, (int) date('Y', $now), (int) date('n', $now))
-        ];
-        $year = [
-            'grid' => $this->SumSeriesFrom($monthGrid, $yearStart),
-            'feed' => $this->SumSeriesFrom($monthFeed, $yearStart),
-            'heater' => $this->SumSeriesFrom($monthHeat, $yearStart)
-        ];
+        if (count($historyGridDaily) === 0) {
+            $historyGridDaily = $this->GetCounterAggregates($archiveID, $gridID, 1, $historyStart, $now, self::FRONIUS_WH_PER_KWH, $this->FirstTimeFor($meta, $gridID));
+        }
+        if (count($historyFeedDaily) === 0) {
+            $historyFeedDaily = $this->GetCounterAggregates($archiveID, $feedID, 1, $historyStart, $now, self::FRONIUS_WH_PER_KWH, $this->FirstTimeFor($meta, $feedID));
+        }
+        if (count($historyHeatDaily) === 0) {
+            $historyHeatDaily = $this->GetCounterAggregates($archiveID, $heaterTotalID, 1, $historyStart, $now, 1.0, $this->FirstTimeFor($meta, $heaterTotalID));
+        }
 
-        $summary = [
-            'today' => $this->DecoratePeriod($today, $gridPrice, $feedPrice, $oilKWh, $efficiency),
-            'week' => $this->DecoratePeriod($week, $gridPrice, $feedPrice, $oilKWh, $efficiency),
-            'month' => $this->DecoratePeriod($month, $gridPrice, $feedPrice, $oilKWh, $efficiency),
-            'last30' => $this->DecoratePeriod($last30, $gridPrice, $feedPrice, $oilKWh, $efficiency),
-            'year' => $this->DecoratePeriod($year, $gridPrice, $feedPrice, $oilKWh, $efficiency)
-        ];
+        $hourGrid = $this->GetHourlyPositiveDeltasFromResetVariable($archiveID, self::GRID_KWH_DAY, $todayStart, $now);
+        $hourFeed = $this->GetHourlyPositiveDeltasFromResetVariable($archiveID, self::FEED_KWH_DAY, $todayStart, $now);
+        if (count($hourGrid) === 0) {
+            $hourGrid = $this->GetCounterAggregates($archiveID, $gridID, 0, $todayStart, $now, self::FRONIUS_WH_PER_KWH, $this->FirstTimeFor($meta, $gridID));
+        }
+        if (count($hourFeed) === 0) {
+            $hourFeed = $this->GetCounterAggregates($archiveID, $feedID, 0, $todayStart, $now, self::FRONIUS_WH_PER_KWH, $this->FirstTimeFor($meta, $feedID));
+        }
+
+        if ($legacy) {
+            $summary = $this->BuildLegacySummary($dayGrid, $dayFeed, $dayHeat, $gridPrice, $feedPrice, $oilKWh, $efficiency);
+        } else {
+            $summary = $this->BuildArchiveSummary($archiveID, $gridID, $feedID, $heaterTotalID, $dayGrid, $dayFeed, $dayHeat, $gridPrice, $feedPrice, $oilKWh, $efficiency, $todayStart, $weekStart, $monthStart, $yearStart, $now);
+        }
+
+        $yearGridMonthly = $this->GroupDailySeriesByMonth($this->FilterSeriesFrom($historyGridDaily, $yearStart));
+        $yearFeedMonthly = $this->GroupDailySeriesByMonth($this->FilterSeriesFrom($historyFeedDaily, $yearStart));
 
         $charts = [
             'day' => $this->CombineChartSeries($hourGrid, $hourFeed, 'day'),
@@ -308,37 +375,37 @@ class EnergieKosten extends IPSModuleStrict
                 'week'
             ),
             'month' => $this->CombineChartSeries($dayGrid, $dayFeed, 'month'),
-            'year' => $this->CombineChartSeries(
-                $this->FilterSeriesFrom($monthGrid, $yearStart),
-                $this->FilterSeriesFrom($monthFeed, $yearStart),
-                'year'
-            )
+            'year' => $this->CombineChartSeries($yearGridMonthly, $yearFeedMonthly, 'year')
         ];
 
-        $forecastGrid = $this->SeasonalAnnualForecast($monthGrid, $coverage['grid'], $now);
-        $forecastFeed = $this->SeasonalAnnualForecast($monthFeed, $coverage['feed'], $now);
-        $forecastHeat = $this->SeasonalAnnualForecast($monthHeat, $coverage['heater'], $now);
+        $monthlyGridHistory = $this->GroupDailySeriesByMonthYear($historyGridDaily);
+        $monthlyFeedHistory = $this->GroupDailySeriesByMonthYear($historyFeedDaily);
+        $monthlyHeatHistory = $this->GroupDailySeriesByMonthYear($historyHeatDaily);
 
-        $forecast = $this->BuildForecastResult(
-            $forecastGrid,
-            $forecastFeed,
-            $forecastHeat,
-            $gridPrice,
-            $feedPrice,
-            $oilKWh,
-            $efficiency
-        );
+        $coverageGrid = $this->FirstTimeFor($meta, self::GRID_KWH_DAY);
+        $coverageFeed = $this->FirstTimeFor($meta, self::FEED_KWH_DAY);
+        $coverageHeat = $this->FirstTimeFor($meta, self::HEAT_KWH_DAY);
+        if ($coverageGrid <= 0) $coverageGrid = $this->FirstTimeFor($meta, $gridID);
+        if ($coverageFeed <= 0) $coverageFeed = $this->FirstTimeFor($meta, $feedID);
+        if ($coverageHeat <= 0) $coverageHeat = $this->FirstTimeFor($meta, $heaterTotalID);
 
-        $actualEnergyCoverage = $year['grid'] > 0.0 ? ($year['feed'] / $year['grid']) * 100.0 : null;
-        $actualGridEuro = $year['grid'] * $gridPrice;
-        $actualFeedEuro = $year['feed'] * $feedPrice;
-        $actualFinancialCoverage = $actualGridEuro > 0.0 ? ($actualFeedEuro / $actualGridEuro) * 100.0 : null;
+        $forecastGrid = $this->SeasonalAnnualForecast($monthlyGridHistory, $coverageGrid, $now);
+        $forecastFeed = $this->SeasonalAnnualForecast($monthlyFeedHistory, $coverageFeed, $now);
+        $forecastHeat = $this->SeasonalAnnualForecast($monthlyHeatHistory, $coverageHeat, $now);
+
+        $forecast = $this->BuildForecastResult($forecastGrid, $forecastFeed, $forecastHeat, $gridPrice, $feedPrice, $oilKWh, $efficiency);
+
+        $yearGridKWh = (float) $summary['year']['grid']['kwh'];
+        $yearFeedKWh = (float) $summary['year']['feed']['kwh'];
+        $yearGridEuro = (float) $summary['year']['grid']['euro'];
+        $yearFeedEuro = (float) $summary['year']['feed']['euro'];
 
         return [
             'ok' => true,
             'instanceID' => $this->InstanceID,
             'cycleSeconds' => $cycle,
             'updated' => $now,
+            'sourceMode' => $legacy ? 'Bestandszähler' : 'Archiv',
             'prices' => [
                 'grid' => $gridPrice,
                 'feed' => $feedPrice,
@@ -348,20 +415,101 @@ class EnergieKosten extends IPSModuleStrict
             'summary' => $summary,
             'charts' => $charts,
             'coverage' => [
-                'grid' => $coverage['grid'],
-                'feed' => $coverage['feed'],
-                'heater' => $coverage['heater'],
-                'todayComplete' => $this->CoverageComplete($coverage, $todayStart),
-                'monthComplete' => $this->CoverageComplete($coverage, $monthStart),
-                'yearComplete' => $this->CoverageComplete($coverage, $yearStart),
-                'last30Complete' => $this->CoverageComplete($coverage, $last30Start)
+                'grid' => $coverageGrid,
+                'feed' => $coverageFeed,
+                'heater' => $coverageHeat,
+                'todayComplete' => $coverageGrid > 0 && $coverageGrid <= $todayStart && $coverageFeed > 0 && $coverageFeed <= $todayStart,
+                'monthComplete' => $coverageGrid > 0 && $coverageGrid <= $monthStart && $coverageFeed > 0 && $coverageFeed <= $monthStart,
+                'yearComplete' => $coverageGrid > 0 && $coverageGrid <= $yearStart && $coverageFeed > 0 && $coverageFeed <= $yearStart,
+                'last30Complete' => $coverageGrid > 0 && $coverageGrid <= $last30Start && $coverageFeed > 0 && $coverageFeed <= $last30Start
             ],
             'actualCoverage' => [
-                'energyPercent' => $actualEnergyCoverage,
-                'financialPercent' => $actualFinancialCoverage,
-                'balanceEuro' => $actualFeedEuro - $actualGridEuro
+                'energyPercent' => $yearGridKWh > 0.0 ? ($yearFeedKWh / $yearGridKWh) * 100.0 : null,
+                'financialPercent' => $yearGridEuro > 0.0 ? ($yearFeedEuro / $yearGridEuro) * 100.0 : null,
+                'balanceEuro' => $yearFeedEuro - $yearGridEuro
             ],
             'forecast' => $forecast
+        ];
+    }
+
+    private function HasLegacySummary(): bool
+    {
+        foreach ([
+            self::GRID_KWH_DAY, self::GRID_KWH_WEEK, self::GRID_KWH_MONTH, self::GRID_KWH_YEAR,
+            self::FEED_KWH_DAY, self::FEED_KWH_WEEK, self::FEED_KWH_MONTH, self::FEED_KWH_YEAR,
+            self::HEAT_KWH_DAY, self::HEAT_KWH_WEEK, self::HEAT_KWH_MONTH, self::HEAT_KWH_YEAR
+        ] as $id) {
+            if (!$this->IsNumericVariable($id)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function BuildLegacySummary(array $dayGrid, array $dayFeed, array $dayHeat, float $gridPrice, float $feedPrice, float $oilKWh, float $efficiency): array
+    {
+        $make = function (int $gK, int $gE, int $fK, int $fE, int $hK) use ($gridPrice, $feedPrice, $oilKWh, $efficiency): array {
+            $grid = $this->SafeValue($gK);
+            $feed = $this->SafeValue($fK);
+            $heat = $this->SafeValue($hK);
+            $gridEuro = $this->IsNumericVariable($gE) ? $this->SafeValue($gE) : $grid * $gridPrice;
+            $feedEuro = $this->IsNumericVariable($fE) ? $this->SafeValue($fE) : $feed * $feedPrice;
+            return [
+                'grid' => ['kwh' => $grid, 'euro' => $gridEuro],
+                'feed' => ['kwh' => $feed, 'euro' => $feedEuro],
+                'heater' => ['kwh' => $heat, 'oilLiter' => $heat / ($oilKWh * $efficiency)]
+            ];
+        };
+
+        $last30 = $this->DecoratePeriod([
+            'grid' => $this->SumSeries($dayGrid),
+            'feed' => $this->SumSeries($dayFeed),
+            'heater' => $this->SumSeries($dayHeat)
+        ], $gridPrice, $feedPrice, $oilKWh, $efficiency);
+
+        return [
+            'today' => $make(self::GRID_KWH_DAY, self::GRID_EUR_DAY, self::FEED_KWH_DAY, self::FEED_EUR_DAY, self::HEAT_KWH_DAY),
+            'week' => $make(self::GRID_KWH_WEEK, self::GRID_EUR_WEEK, self::FEED_KWH_WEEK, self::FEED_EUR_WEEK, self::HEAT_KWH_WEEK),
+            'month' => $make(self::GRID_KWH_MONTH, self::GRID_EUR_MONTH, self::FEED_KWH_MONTH, self::FEED_EUR_MONTH, self::HEAT_KWH_MONTH),
+            'last30' => $last30,
+            'year' => $make(self::GRID_KWH_YEAR, self::GRID_EUR_YEAR, self::FEED_KWH_YEAR, self::FEED_EUR_YEAR, self::HEAT_KWH_YEAR)
+        ];
+    }
+
+    private function BuildArchiveSummary(int $archiveID, int $gridID, int $feedID, int $heaterID, array $dayGrid, array $dayFeed, array $dayHeat, float $gridPrice, float $feedPrice, float $oilKWh, float $efficiency, int $todayStart, int $weekStart, int $monthStart, int $yearStart, int $now): array
+    {
+        $today = [
+            'grid' => $this->CounterDeltaRaw($archiveID, $gridID, $todayStart, $now, self::FRONIUS_WH_PER_KWH),
+            'feed' => $this->CounterDeltaRaw($archiveID, $feedID, $todayStart, $now, self::FRONIUS_WH_PER_KWH),
+            'heater' => $this->CounterDeltaRaw($archiveID, $heaterID, $todayStart, $now, 1.0)
+        ];
+        $week = [
+            'grid' => $this->CounterDeltaRaw($archiveID, $gridID, $weekStart, $now, self::FRONIUS_WH_PER_KWH),
+            'feed' => $this->CounterDeltaRaw($archiveID, $feedID, $weekStart, $now, self::FRONIUS_WH_PER_KWH),
+            'heater' => $this->CounterDeltaRaw($archiveID, $heaterID, $weekStart, $now, 1.0)
+        ];
+        $month = [
+            'grid' => $this->CounterDeltaRaw($archiveID, $gridID, $monthStart, $now, self::FRONIUS_WH_PER_KWH),
+            'feed' => $this->CounterDeltaRaw($archiveID, $feedID, $monthStart, $now, self::FRONIUS_WH_PER_KWH),
+            'heater' => $this->CounterDeltaRaw($archiveID, $heaterID, $monthStart, $now, 1.0)
+        ];
+        $year = [
+            'grid' => $this->CounterDeltaRaw($archiveID, $gridID, $yearStart, $now, self::FRONIUS_WH_PER_KWH),
+            'feed' => $this->CounterDeltaRaw($archiveID, $feedID, $yearStart, $now, self::FRONIUS_WH_PER_KWH),
+            'heater' => $this->CounterDeltaRaw($archiveID, $heaterID, $yearStart, $now, 1.0)
+        ];
+        $last30 = [
+            'grid' => $this->SumSeries($dayGrid),
+            'feed' => $this->SumSeries($dayFeed),
+            'heater' => $this->SumSeries($dayHeat)
+        ];
+
+        return [
+            'today' => $this->DecoratePeriod($today, $gridPrice, $feedPrice, $oilKWh, $efficiency),
+            'week' => $this->DecoratePeriod($week, $gridPrice, $feedPrice, $oilKWh, $efficiency),
+            'month' => $this->DecoratePeriod($month, $gridPrice, $feedPrice, $oilKWh, $efficiency),
+            'last30' => $this->DecoratePeriod($last30, $gridPrice, $feedPrice, $oilKWh, $efficiency),
+            'year' => $this->DecoratePeriod($year, $gridPrice, $feedPrice, $oilKWh, $efficiency)
         ];
     }
 
@@ -382,39 +530,112 @@ class EnergieKosten extends IPSModuleStrict
         return isset($meta[$variableID]['FirstTime']) ? (int) $meta[$variableID]['FirstTime'] : 0;
     }
 
-    private function GetEnergySeries(
-        int $archiveID,
-        int $variableID,
-        int $level,
-        int $start,
-        int $end,
-        float $divisor,
-        int $firstTime
-    ): array {
-        if ($variableID <= 0 || !$this->IsNumericVariable($variableID)) {
+    private function GetDailyTotalsFromResetVariable(int $archiveID, int $variableID, int $start, int $end, int $firstTime): array
+    {
+        if (!$this->IsNumericVariable($variableID) || !AC_GetLoggingStatus($archiveID, $variableID)) {
             return [];
         }
 
+        $type = AC_GetAggregationType($archiveID, $variableID);
+        $rows = AC_GetAggregatedValues($archiveID, $variableID, 1, $start, $end, 0);
+        $series = [];
+        foreach ($rows as $row) {
+            $ts = (int) $row['TimeStamp'];
+            $duration = (int) ($row['Duration'] ?? 86400);
+            $periodEnd = $ts + max(1, $duration);
+            if ($firstTime > 0 && $periodEnd <= $firstTime) {
+                continue;
+            }
+            $value = $type === 1 ? (float) ($row['Avg'] ?? 0.0) : (float) ($row['Max'] ?? 0.0);
+            $series[] = ['ts' => $ts, 'value' => max(0.0, $value)];
+        }
+        usort($series, static fn(array $a, array $b): int => $a['ts'] <=> $b['ts']);
+        return $series;
+    }
+
+    private function GetHourlyPositiveDeltasFromResetVariable(int $archiveID, int $variableID, int $start, int $end): array
+    {
+        if (!$this->IsNumericVariable($variableID) || !AC_GetLoggingStatus($archiveID, $variableID)) {
+            return [];
+        }
+        $rows = AC_GetLoggedValues($archiveID, $variableID, $start, $end, 0);
+        if (count($rows) === 0) {
+            return [];
+        }
+        usort($rows, static fn(array $a, array $b): int => ((int) $a['TimeStamp']) <=> ((int) $b['TimeStamp']));
+
+        $hourStart = strtotime(date('Y-m-d H:00:00', $start));
+        $lastHour = strtotime(date('Y-m-d H:00:00', $end));
+        $buckets = [];
+        for ($ts = $hourStart; $ts <= $lastHour; $ts += 3600) {
+            $buckets[$ts] = 0.0;
+        }
+
+        $prev = null;
+        foreach ($rows as $row) {
+            $v = max(0.0, (float) $row['Value']);
+            if ($prev !== null) {
+                $delta = $v - $prev;
+                if ($delta > 0.0) {
+                    $bucket = strtotime(date('Y-m-d H:00:00', (int) $row['TimeStamp']));
+                    if (isset($buckets[$bucket])) {
+                        $buckets[$bucket] += $delta;
+                    }
+                }
+            }
+            $prev = $v;
+        }
+
+        $out = [];
+        foreach ($buckets as $ts => $value) {
+            $out[] = ['ts' => (int) $ts, 'value' => $value];
+        }
+        return $out;
+    }
+
+    private function GetCounterAggregates(int $archiveID, int $variableID, int $level, int $start, int $end, float $divisor, int $firstTime): array
+    {
+        if (!$this->IsNumericVariable($variableID) || !AC_GetLoggingStatus($archiveID, $variableID)) {
+            return [];
+        }
+        $type = AC_GetAggregationType($archiveID, $variableID);
         $rows = AC_GetAggregatedValues($archiveID, $variableID, $level, $start, $end, 0);
         $series = [];
         foreach ($rows as $row) {
             $ts = (int) $row['TimeStamp'];
-            $duration = isset($row['Duration']) ? (int) $row['Duration'] : 0;
+            $duration = (int) ($row['Duration'] ?? 0);
             $periodEnd = $duration > 0 ? $ts + $duration : $ts;
 
-            // Perioden vollständig vor Beginn des Archivs nicht als echte Nullwerte ausgeben.
-            if ($firstTime > 0 && $periodEnd <= $firstTime) {
+            // Wenn das Logging innerhalb dieser Periode begann, kann bei einem
+            // Zähler der vorhandene Startwert als erste positive Differenz auftauchen.
+            if ($firstTime > 0 && $firstTime >= $ts && $firstTime < $periodEnd) {
                 continue;
             }
 
-            $series[] = [
-                'ts' => $ts,
-                'value' => ((float) $row['Avg']) / $divisor
-            ];
+            if ($type === 1) {
+                $value = (float) ($row['Avg'] ?? 0.0);
+            } else {
+                $value = max(0.0, (float) ($row['Max'] ?? 0.0) - (float) ($row['Min'] ?? 0.0));
+            }
+            $series[] = ['ts' => $ts, 'value' => max(0.0, $value / $divisor)];
         }
-
         usort($series, static fn(array $a, array $b): int => $a['ts'] <=> $b['ts']);
         return $series;
+    }
+
+    private function CounterDeltaRaw(int $archiveID, int $variableID, int $start, int $end, float $divisor): float
+    {
+        if (!$this->IsNumericVariable($variableID) || !AC_GetLoggingStatus($archiveID, $variableID)) {
+            return 0.0;
+        }
+        $prev = AC_GetLoggedValues($archiveID, $variableID, 0, max(0, $start - 1), 1);
+        $inside = AC_GetLoggedValues($archiveID, $variableID, $start, $end, 1);
+        if (count($prev) === 0 || count($inside) === 0) {
+            return 0.0;
+        }
+        $base = (float) $prev[0]['Value'];
+        $last = (float) $inside[0]['Value'];
+        return max(0.0, ($last - $base) / $divisor);
     }
 
     private function SumSeries(array $series): float
@@ -426,33 +647,31 @@ class EnergieKosten extends IPSModuleStrict
         return $sum;
     }
 
-    private function SumSeriesFrom(array $series, int $start): float
-    {
-        $sum = 0.0;
-        foreach ($series as $row) {
-            if ((int) $row['ts'] >= $start) {
-                $sum += (float) $row['value'];
-            }
-        }
-        return $sum;
-    }
-
     private function FilterSeriesFrom(array $series, int $start): array
     {
-        return array_values(array_filter(
-            $series,
-            static fn(array $row): bool => (int) $row['ts'] >= $start
-        ));
+        return array_values(array_filter($series, static fn(array $row): bool => (int) $row['ts'] >= $start));
     }
 
-    private function ValueForMonth(array $series, int $year, int $month): float
+    private function GroupDailySeriesByMonth(array $daily): array
     {
-        foreach ($series as $row) {
-            if ((int) date('Y', (int) $row['ts']) === $year && (int) date('n', (int) $row['ts']) === $month) {
-                return (float) $row['value'];
-            }
+        $map = [];
+        foreach ($daily as $row) {
+            $ts = strtotime(date('Y-m-01 00:00:00', (int) $row['ts']));
+            if (!isset($map[$ts])) $map[$ts] = 0.0;
+            $map[$ts] += (float) $row['value'];
         }
-        return 0.0;
+        ksort($map, SORT_NUMERIC);
+        $out = [];
+        foreach ($map as $ts => $value) {
+            $out[] = ['ts' => (int) $ts, 'value' => $value];
+        }
+        return $out;
+    }
+
+    private function GroupDailySeriesByMonthYear(array $daily): array
+    {
+        // Gleiche Struktur wie monatliche Archive-Serie: ein Datensatz je Jahr/Monat.
+        return $this->GroupDailySeriesByMonth($daily);
     }
 
     private function DecoratePeriod(array $period, float $gridPrice, float $feedPrice, float $oilKWh, float $efficiency): array
@@ -460,29 +679,22 @@ class EnergieKosten extends IPSModuleStrict
         $grid = max(0.0, (float) ($period['grid'] ?? 0.0));
         $feed = max(0.0, (float) ($period['feed'] ?? 0.0));
         $heater = max(0.0, (float) ($period['heater'] ?? 0.0));
-        $oil = $heater / ($oilKWh * $efficiency);
-
         return [
             'grid' => ['kwh' => $grid, 'euro' => $grid * $gridPrice],
             'feed' => ['kwh' => $feed, 'euro' => $feed * $feedPrice],
-            'heater' => ['kwh' => $heater, 'oilLiter' => $oil]
+            'heater' => ['kwh' => $heater, 'oilLiter' => $heater / ($oilKWh * $efficiency)]
         ];
     }
 
     private function CombineChartSeries(array $grid, array $feed, string $mode): array
     {
         $gridMap = [];
-        foreach ($grid as $row) {
-            $gridMap[(int) $row['ts']] = (float) $row['value'];
-        }
+        foreach ($grid as $row) $gridMap[(int) $row['ts']] = (float) $row['value'];
         $feedMap = [];
-        foreach ($feed as $row) {
-            $feedMap[(int) $row['ts']] = (float) $row['value'];
-        }
+        foreach ($feed as $row) $feedMap[(int) $row['ts']] = (float) $row['value'];
 
         $timestamps = array_unique(array_merge(array_keys($gridMap), array_keys($feedMap)));
         sort($timestamps, SORT_NUMERIC);
-
         $out = [];
         foreach ($timestamps as $ts) {
             $out[] = [
@@ -497,16 +709,12 @@ class EnergieKosten extends IPSModuleStrict
 
     private function ChartLabel(int $ts, string $mode): string
     {
-        if ($mode === 'day') {
-            return date('H:i', $ts);
-        }
+        if ($mode === 'day') return date('H:i', $ts);
         if ($mode === 'week') {
             $days = [1 => 'Mo', 2 => 'Di', 3 => 'Mi', 4 => 'Do', 5 => 'Fr', 6 => 'Sa', 7 => 'So'];
             return $days[(int) date('N', $ts)] . ' ' . date('d.m.', $ts);
         }
-        if ($mode === 'month') {
-            return date('d.m.', $ts);
-        }
+        if ($mode === 'month') return date('d.m.', $ts);
         $months = [1 => 'Jan', 2 => 'Feb', 3 => 'Mär', 4 => 'Apr', 5 => 'Mai', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Dez'];
         return $months[(int) date('n', $ts)];
     }
@@ -516,7 +724,6 @@ class EnergieKosten extends IPSModuleStrict
         $currentYear = (int) date('Y', $now);
         $currentMonth = (int) date('n', $now);
         $today = (int) date('j', $now);
-        $currentMonthStart = strtotime(date('Y-m-01 00:00:00', $now));
 
         $byYearMonth = [];
         foreach ($monthlySeries as $row) {
@@ -530,9 +737,7 @@ class EnergieKosten extends IPSModuleStrict
         for ($m = 1; $m <= 12; $m++) {
             $samples = [];
             foreach ($byYearMonth as $year => $months) {
-                if ((int) $year >= $currentYear || !isset($months[$m])) {
-                    continue;
-                }
+                if ((int) $year >= $currentYear || !isset($months[$m])) continue;
                 $monthStart = strtotime(sprintf('%04d-%02d-01 00:00:00', (int) $year, $m));
                 $monthEnd = strtotime('+1 month', $monthStart);
                 if ($coverageStart > 0 && $coverageStart <= $monthStart && $monthEnd <= $now) {
@@ -540,10 +745,7 @@ class EnergieKosten extends IPSModuleStrict
                 }
             }
             if (count($samples) > 0) {
-                $historical[$m] = [
-                    'avg' => array_sum($samples) / count($samples),
-                    'samples' => count($samples)
-                ];
+                $historical[$m] = ['avg' => array_sum($samples) / count($samples), 'samples' => count($samples)];
             }
         }
 
@@ -560,7 +762,6 @@ class EnergieKosten extends IPSModuleStrict
                 $total += (float) $byYearMonth[$currentYear][$m];
                 continue;
             }
-
             if ($m === $currentMonth && $hasFullCurrentCoverage && isset($byYearMonth[$currentYear][$m]) && $today >= 7) {
                 $daysInMonth = (int) date('t', $now);
                 $mtd = (float) $byYearMonth[$currentYear][$m];
@@ -569,26 +770,18 @@ class EnergieKosten extends IPSModuleStrict
                 $minSamples = min($minSamples, 1);
                 continue;
             }
-
             if (isset($historical[$m])) {
                 $total += (float) $historical[$m]['avg'];
                 $usedForecastMonths++;
                 $minSamples = min($minSamples, (int) $historical[$m]['samples']);
                 continue;
             }
-
             $missing[] = $m;
         }
 
         $complete = count($missing) === 0;
         $quality = 'niedrig';
-        if ($complete) {
-            if ($minSamples >= 2) {
-                $quality = 'hoch';
-            } else {
-                $quality = 'mittel';
-            }
-        }
+        if ($complete) $quality = $minSamples >= 2 ? 'hoch' : 'mittel';
 
         return [
             'complete' => $complete,
@@ -599,23 +792,14 @@ class EnergieKosten extends IPSModuleStrict
         ];
     }
 
-    private function BuildForecastResult(
-        array $grid,
-        array $feed,
-        array $heater,
-        float $gridPrice,
-        float $feedPrice,
-        float $oilKWh,
-        float $efficiency
-    ): array {
+    private function BuildForecastResult(array $grid, array $feed, array $heater, float $gridPrice, float $feedPrice, float $oilKWh, float $efficiency): array
+    {
         $complete = (bool) $grid['complete'] && (bool) $feed['complete'];
         $months = array_values(array_unique(array_merge($grid['missingMonths'], $feed['missingMonths'])));
         sort($months);
 
         $quality = 'niedrig';
-        if ($complete) {
-            $quality = ($grid['quality'] === 'hoch' && $feed['quality'] === 'hoch') ? 'hoch' : 'mittel';
-        }
+        if ($complete) $quality = ($grid['quality'] === 'hoch' && $feed['quality'] === 'hoch') ? 'hoch' : 'mittel';
 
         $result = [
             'complete' => $complete,
@@ -637,7 +821,6 @@ class EnergieKosten extends IPSModuleStrict
             $feedKWh = (float) $feed['value'];
             $gridEuro = $gridKWh * $gridPrice;
             $feedEuro = $feedKWh * $feedPrice;
-
             $result['gridKWh'] = $gridKWh;
             $result['feedKWh'] = $feedKWh;
             $result['energyCoveragePercent'] = $gridKWh > 0.0 ? ($feedKWh / $gridKWh) * 100.0 : null;
@@ -652,17 +835,6 @@ class EnergieKosten extends IPSModuleStrict
             $result['heaterKWh'] = $heaterKWh;
             $result['oilLiter'] = $heaterKWh / ($oilKWh * $efficiency);
         }
-
         return $result;
-    }
-
-    private function CoverageComplete(array $coverage, int $periodStart): bool
-    {
-        foreach ($coverage as $firstTime) {
-            if ((int) $firstTime <= 0 || (int) $firstTime > $periodStart) {
-                return false;
-            }
-        }
-        return true;
     }
 }

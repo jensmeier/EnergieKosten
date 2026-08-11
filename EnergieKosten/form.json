@@ -2,7 +2,7 @@
     "elements": [
         {
             "type": "Label",
-            "caption": "Energie & Kosten – V1 BUILD2. Die bestehenden Skripte bleiben unverändert und können parallel weiterlaufen."
+            "caption": "Energie & Kosten – V1 BUILD3. Vorhandene Tag/Woche/Monat/Jahr-Werte und geloggte Tagesdaten werden automatisch weiterverwendet. Bestehende Skripte bleiben unverändert."
         },
         {
             "type": "ExpansionPanel",
@@ -13,33 +13,24 @@
                     "type": "SelectVariable",
                     "name": "GridImportVariable",
                     "caption": "Netzbezug Gesamtzähler (Fronius)",
-                    "validVariableTypes": [
-                        1,
-                        2
-                    ]
+                    "validVariableTypes": [1, 2]
                 },
                 {
                     "type": "SelectVariable",
                     "name": "FeedInVariable",
                     "caption": "Einspeisung Gesamtzähler (Fronius)",
-                    "validVariableTypes": [
-                        1,
-                        2
-                    ]
+                    "validVariableTypes": [1, 2]
                 },
                 {
                     "type": "SelectVariable",
                     "name": "HeaterPowerVariable",
                     "caption": "Heizstab Leistung in W",
-                    "validVariableTypes": [
-                        1,
-                        2
-                    ]
+                    "validVariableTypes": [1, 2]
                 },
                 {
                     "type": "CheckBox",
                     "name": "AutoArchive",
-                    "caption": "Archivierung automatisch einschalten und als Zähler konfigurieren"
+                    "caption": "Benötigte Archivierung automatisch einschalten"
                 }
             ]
         },
@@ -103,7 +94,7 @@
         },
         {
             "type": "Label",
-            "caption": "Hinweis: Die Fronius-Gesamtzähler werden entsprechend deinem bisherigen Skript als Wh interpretiert und intern in kWh umgerechnet. Das neue Heizstab-Archiv beginnt mit Installation dieses Moduls."
+            "caption": "BUILD3 verwendet für die Kachel automatisch die bereits vorhandenen kWh-/€-Summen. Für Diagramm und saisonale Prognose werden bevorzugt die geloggten Tageszähler ausgewertet. Es werden dafür keine zusätzlichen Tag/Woche/Monat/Jahr-Variablen angelegt."
         }
     ],
     "actions": [

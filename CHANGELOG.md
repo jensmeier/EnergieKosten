@@ -1,18 +1,17 @@
 # Changelog
 
-## V1 BUILD2 – 11.08.2026
-- Fix: `UpdateVisualizationValue()` erhält komplexe Visualisierungsdaten jetzt als JSON-String. Dadurch tritt beim Erstellen der Instanz unter IP-Symcon 9.0 nicht mehr `Cannot auto-convert value for parameter Value (Type is not supported)` auf.
-- HTML-SDK `handleMessage()` verarbeitet sowohl JSON-Strings als auch direkte Werte.
-- Autor in `library.json` auf `JZCG` geändert.
+## V1 BUILD3
+- Fehler behoben: Heute/Monat/Jahr zeigten den Fronius-Lebenszeitstand statt den Zeitraumverbrauch.
+- Vorhandene kWh-/Euro-Summen werden automatisch genutzt: Netzbezug, Einspeisung und Heizstab für Tag/Woche/Monat/Jahr.
+- Bereits geloggte Tagesvariablen werden für 7-/30-Tage-Diagramm und saisonale Monats-/Jahreshistorie verwendet.
+- Vorhandenes Archiv wird nicht mehr unnötig umkonfiguriert; bestehender Aggregationstyp bleibt erhalten.
+- Erste Zählerperiode nach neu aktiviertem Logging wird bei Fallback-Auswertung übersprungen, damit kein kompletter Lebenszeitstand als Tagesverbrauch erscheint.
+- Doppelten Titel in der kleinen Kachel entfernt.
+- Autor: JZCG.
 
-## 1.0 BUILD1 – 11.08.2026
-- Erste Testversion für IP-Symcon 9.0.
-- HTML-SDK-Kachel, kompakt + maximierte Detailansicht.
-- Automatischer Wechsel Heute/Monat/Jahr, 3–60 s einstellbar.
-- Diagramm Tag/Woche/letzte 30 Tage/Jahr.
-- Tag/Woche/Monat/Jahr für Netzbezug und Einspeisung in kWh + €.
-- Heizstab in kWh + rechnerisch gesparte Liter Heizöl.
-- Ein neuer fortlaufender Heizstab-Gesamtzähler.
-- Automatische Archivaktivierung und Aggregationstyp Zähler.
-- Saisonale Jahresprognose; keine lineare Jahreshochrechnung bei fehlender Saisonhistorie.
-- Alte Skripte/IDs bleiben unangetastet (Paralleltest).
+## V1 BUILD2
+- HTML-SDK Visualisierungsdaten werden als JSON-String übertragen.
+- Autor auf JZCG geändert.
+
+## V1 BUILD1
+- Erste Version.
