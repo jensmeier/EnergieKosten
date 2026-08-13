@@ -336,6 +336,8 @@ class EnergieKosten extends IPSModuleStrict
         $monthStart = strtotime(date('Y-m-01 00:00:00', $now));
         $yearStart = strtotime(date('Y-01-01 00:00:00', $now));
         $last30Start = strtotime('today -29 days', $now);
+        $dayHistoryStart = strtotime('today -7 days', $now);
+        $chartDailyStart = strtotime('today -400 days', $now);
         $historyStart = strtotime('-3 years', $yearStart);
 
         $gridPrice = max(0.0, $this->ReadPropertyFloat('GridPrice'));
@@ -390,13 +392,16 @@ class EnergieKosten extends IPSModuleStrict
             $historyHeatDaily = $this->GetCounterAggregates($archiveID, $heaterTotalID, 1, $historyStart, $now, 1.0, $this->FirstTimeFor($meta, $heaterTotalID));
         }
 
-        $hourGrid = $this->GetHourlyPositiveDeltasFromResetVariable($archiveID, self::GRID_KWH_DAY, $todayStart, $now);
-        $hourFeed = $this->GetHourlyPositiveDeltasFromResetVariable($archiveID, self::FEED_KWH_DAY, $todayStart, $now);
+        // BUILD6: Für die Tagesansicht werden auch die letzten 7 Tage stündlich
+        // mitgegeben. Damit kann die Detailseite auf dem Tablet horizontal in die
+        // Vergangenheit gescrollt werden, ohne eine zusätzliche ID oder Anfrage.
+        $hourGrid = $this->GetHourlyPositiveDeltasFromResetVariable($archiveID, self::GRID_KWH_DAY, $dayHistoryStart, $now);
+        $hourFeed = $this->GetHourlyPositiveDeltasFromResetVariable($archiveID, self::FEED_KWH_DAY, $dayHistoryStart, $now);
         if (count($hourGrid) === 0) {
-            $hourGrid = $this->GetCounterAggregates($archiveID, $gridID, 0, $todayStart, $now, self::FRONIUS_WH_PER_KWH, $this->FirstTimeFor($meta, $gridID));
+            $hourGrid = $this->GetCounterAggregates($archiveID, $gridID, 0, $dayHistoryStart, $now, self::FRONIUS_WH_PER_KWH, $this->FirstTimeFor($meta, $gridID));
         }
         if (count($hourFeed) === 0) {
-            $hourFeed = $this->GetCounterAggregates($archiveID, $feedID, 0, $todayStart, $now, self::FRONIUS_WH_PER_KWH, $this->FirstTimeFor($meta, $feedID));
+            $hourFeed = $this->GetCounterAggregates($archiveID, $feedID, 0, $dayHistoryStart, $now, self::FRONIUS_WH_PER_KWH, $this->FirstTimeFor($meta, $feedID));
         }
 
         if ($legacy) {
@@ -405,17 +410,18 @@ class EnergieKosten extends IPSModuleStrict
             $summary = $this->BuildArchiveSummary($archiveID, $gridID, $feedID, $heaterTotalID, $dayGrid, $dayFeed, $dayHeat, $gridPrice, $feedPrice, $oilKWh, $efficiency, $todayStart, $weekStart, $monthStart, $yearStart, $now);
         }
 
-        $yearGridMonthly = $this->GroupDailySeriesByMonth($this->FilterSeriesFrom($historyGridDaily, $yearStart));
-        $yearFeedMonthly = $this->GroupDailySeriesByMonth($this->FilterSeriesFrom($historyFeedDaily, $yearStart));
+        $yearGridMonthly = $this->GroupDailySeriesByMonth($historyGridDaily);
+        $yearFeedMonthly = $this->GroupDailySeriesByMonth($historyFeedDaily);
 
+        $chartGridDaily = $this->FilterSeriesFrom($historyGridDaily, $chartDailyStart);
+        $chartFeedDaily = $this->FilterSeriesFrom($historyFeedDaily, $chartDailyStart);
         $charts = [
             'day' => $this->CombineChartSeries($hourGrid, $hourFeed, 'day'),
-            'week' => $this->CombineChartSeries(
-                $this->FilterSeriesFrom($dayGrid, $weekStart),
-                $this->FilterSeriesFrom($dayFeed, $weekStart),
-                'week'
-            ),
-            'month' => $this->CombineChartSeries($dayGrid, $dayFeed, 'month'),
+            // Woche und Monat enthalten bewusst mehr Historie als das zunächst
+            // sichtbare Fenster. Die Webansicht startet ganz rechts bei heute und
+            // kann nach links zu älteren geloggten Werten gescrollt werden.
+            'week' => $this->CombineChartSeries($chartGridDaily, $chartFeedDaily, 'week'),
+            'month' => $this->CombineChartSeries($chartGridDaily, $chartFeedDaily, 'month'),
             'year' => $this->CombineChartSeries($yearGridMonthly, $yearFeedMonthly, 'year')
         ];
 
@@ -441,6 +447,48 @@ class EnergieKosten extends IPSModuleStrict
         $yearGridEuro = (float) $summary['year']['grid']['euro'];
         $yearFeedEuro = (float) $summary['year']['feed']['euro'];
 
+        // BUILD6: verständliche Jahreshochrechnung statt Deckungs-Prozentwerten.
+        // Wenn eine vollständige saisonale Prognose vorhanden ist, wird sie genutzt.
+        // Fehlen Vergleichsmonate, gibt es trotzdem eine klar als "vorläufig"
+        // gekennzeichnete lineare Hochrechnung auf Basis des tatsächlich erfassten
+        // Zeitraums. Heizstab ist bewusst nicht Bestandteil der Jahresrechnung.
+        $daysInYear = ((int) date('L', $now) === 1) ? 366.0 : 365.0;
+        $gridBasisStart = ($coverageGrid > $yearStart && $coverageGrid < $now) ? $coverageGrid : $yearStart;
+        $feedBasisStart = ($coverageFeed > $yearStart && $coverageFeed < $now) ? $coverageFeed : $yearStart;
+        $gridObservedDays = max(1.0, min($daysInYear, (($now - $gridBasisStart) / 86400.0) + 1.0));
+        $feedObservedDays = max(1.0, min($daysInYear, (($now - $feedBasisStart) / 86400.0) + 1.0));
+
+        if ((bool) ($forecast['complete'] ?? false)) {
+            $projectionGridKWh = (float) ($forecast['gridKWh'] ?? 0.0);
+            $projectionFeedKWh = (float) ($forecast['feedKWh'] ?? 0.0);
+            $projectionGridEuro = (float) ($forecast['gridEuro'] ?? 0.0);
+            $projectionFeedEuro = (float) ($forecast['feedEuro'] ?? 0.0);
+            $projectionMethod = 'saisonal';
+            $projectionProvisional = false;
+        } else {
+            $projectionGridKWh = $yearGridKWh * ($daysInYear / $gridObservedDays);
+            $projectionFeedKWh = $yearFeedKWh * ($daysInYear / $feedObservedDays);
+            // Bei der vorläufigen Hochrechnung werden die tatsächlich aufgelaufenen
+            // Eurobeträge hochgerechnet. So bleiben frühere Preisstände erhalten.
+            $projectionGridEuro = $yearGridEuro * ($daysInYear / $gridObservedDays);
+            $projectionFeedEuro = $yearFeedEuro * ($daysInYear / $feedObservedDays);
+            $projectionMethod = 'linear';
+            $projectionProvisional = true;
+        }
+
+        $yearProjection = [
+            'gridKWh' => $projectionGridKWh,
+            'feedKWh' => $projectionFeedKWh,
+            'gridEuro' => $projectionGridEuro,
+            'feedEuro' => $projectionFeedEuro,
+            'balanceEuro' => $projectionFeedEuro - $projectionGridEuro,
+            'method' => $projectionMethod,
+            'provisional' => $projectionProvisional,
+            'gridBasisStart' => $gridBasisStart,
+            'feedBasisStart' => $feedBasisStart,
+            'missingMonths' => $forecast['missingMonths'] ?? []
+        ];
+
         return [
             'ok' => true,
             'instanceID' => $this->InstanceID,
@@ -464,11 +512,31 @@ class EnergieKosten extends IPSModuleStrict
                 'yearComplete' => $coverageGrid > 0 && $coverageGrid <= $yearStart && $coverageFeed > 0 && $coverageFeed <= $yearStart,
                 'last30Complete' => $coverageGrid > 0 && $coverageGrid <= $last30Start && $coverageFeed > 0 && $coverageFeed <= $last30Start
             ],
+            'historySources' => [
+                'grid' => [
+                    'id' => self::GRID_KWH_DAY,
+                    'logged' => $this->IsNumericVariable(self::GRID_KWH_DAY) && AC_GetLoggingStatus($archiveID, self::GRID_KWH_DAY),
+                    'first' => $this->FirstTimeFor($meta, self::GRID_KWH_DAY)
+                ],
+                'feed' => [
+                    'id' => self::FEED_KWH_DAY,
+                    'logged' => $this->IsNumericVariable(self::FEED_KWH_DAY) && AC_GetLoggingStatus($archiveID, self::FEED_KWH_DAY),
+                    'first' => $this->FirstTimeFor($meta, self::FEED_KWH_DAY)
+                ],
+                'heater' => [
+                    'id' => self::HEAT_KWH_DAY,
+                    'logged' => $this->IsNumericVariable(self::HEAT_KWH_DAY) && AC_GetLoggingStatus($archiveID, self::HEAT_KWH_DAY),
+                    'first' => $this->FirstTimeFor($meta, self::HEAT_KWH_DAY)
+                ]
+            ],
             'actualCoverage' => [
                 'energyPercent' => $yearGridKWh > 0.0 ? ($yearFeedKWh / $yearGridKWh) * 100.0 : null,
+                'energyMultiple' => $yearGridKWh > 0.0 ? ($yearFeedKWh / $yearGridKWh) : null,
+                'energyBalanceKWh' => $yearFeedKWh - $yearGridKWh,
                 'financialPercent' => $yearGridEuro > 0.0 ? ($yearFeedEuro / $yearGridEuro) * 100.0 : null,
                 'balanceEuro' => $yearFeedEuro - $yearGridEuro
             ],
+            'yearProjection' => $yearProjection,
             'forecast' => $forecast
         ];
     }

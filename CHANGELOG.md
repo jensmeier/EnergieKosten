@@ -1,3 +1,21 @@
+# BUILD6
+- Jahresrechnung vereinfacht: Einspeisung und Netzbezug jeweils „Bis jetzt“ in kWh + Euro sowie Hochrechnung bis 31.12.
+- Deckungs-Prozentanzeigen aus der Jahresrechnung entfernt.
+- Neue klare Anzeige „Energiebilanz“ = Einspeisevergütung minus Netzbezugskosten; bisher und als Jahreshochrechnung.
+- Heizstab ist nicht Bestandteil der Jahresrechnung; Heizstab-/Ölwerte bleiben nur in der separaten Statistik.
+- Wenn saisonale Vergleichsdaten vollständig sind, nutzt die Hochrechnung die saisonale Prognose; ansonsten gibt es eine als vorläufig gekennzeichnete lineare Hochrechnung.
+- Diagramm Tag/Woche/Monat horizontal scroll-/wischbar: Tag bis 7 Tage zurück, Woche/30 Tage bis ca. 400 Tage zurück. Jahresansicht unterstützt ebenfalls ältere Jahre, sofern Archivdaten vorhanden sind.
+- Diagramm startet immer beim aktuellsten Zeitraum; Button „Aktuell“ springt zurück nach rechts.
+- Antippen eines Balkens zeigt Datum/Zeit, Netzbezug kWh+€, Einspeisung kWh+€ und Energiebilanz.
+- Unter dem Diagramm werden Netzbezug, Einspeisung und Energiebilanz des aktuell sichtbaren Zeitfensters zusammengefasst.
+
+# BUILD5
+- Tablet-Kachel passt den Inhalt automatisch an die von Symcon vorgegebene feste Kachelfläche an; extra XS-Modus gegen abgeschnittene Werte.
+- Vorhandene geloggte Tages-IDs 15785 (Netzbezug) und 56673 (Einspeisung) werden explizit als bevorzugte Historie ausgewiesen und genutzt.
+- Detailseite trennt jetzt bisherige Deckung und echte Jahresprognose klar.
+- Deckung über 100 % wird als „100 % gedeckt“ dargestellt; der tatsächliche Faktor (z. B. 31,3×) und der Überschuss bleiben sichtbar.
+- Fehlende Winter-/Vergleichsdaten werden mit Archivbeginn und verwendeten IDs erklärt.
+
 # Changelog
 
 ## V1 BUILD4

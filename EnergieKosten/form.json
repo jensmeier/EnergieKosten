@@ -2,7 +2,7 @@
     "elements": [
         {
             "type": "Label",
-            "caption": "Energie & Kosten – V1 BUILD4. Kachel mit Auto-Größe; Netzbezug/Einspeisung zeigen € groß und kWh klein. Antippen öffnet die separate Detailansicht mit Diagramm & Prognose."
+            "caption": "Energie & Kosten – V1 BUILD6. Detaildiagramm auf dem Tablet horizontal durch die geloggte Historie scrollen. Jahresrechnung zeigt Einspeisung und Netzbezug jeweils bisher + Hochrechnung sowie die Energiebilanz in Euro."
         },
         {
             "type": "ExpansionPanel",
@@ -103,7 +103,7 @@
         },
         {
             "type": "Label",
-            "caption": "BUILD4 verwendet weiterhin die vorhandenen kWh-/€-Summen und geloggten Tagesdaten. Zusätzlich wird genau eine String-Variable „Energie Detail“ als Webinhalt angelegt. Die alten Skripte und IDs bleiben während der Testphase unverändert."
+            "caption": "BUILD6: Tag bis 7 Tage zurück; Woche und 30-Tage-Ansicht bis ca. 400 Tage zurück horizontal scrollen. Antippen eines Balkens zeigt kWh, Euro und Energiebilanz. Jahresrechnung ohne Heizstab/Deckungsprozente: bisherige Werte + Hochrechnung + Energiebilanz. Vorhandene IDs/Skripte bleiben unverändert."
         }
     ],
     "actions": [

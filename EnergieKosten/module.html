@@ -79,6 +79,19 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color
 .ek-wrap.ek-xs .ek-mini-main { font-size:12px; }
 .ek-wrap.ek-xs .ek-mini-sub { font-size:8px; margin-top:1px; }
 .ek-wrap.ek-xs .ek-foot { display:none; }
+
+/* Sehr kleine Tablet-Kachel: Beschriftungen werden gekürzt/ausgeblendet,
+   damit die Messwerte niemals rechts abgeschnitten werden. */
+.ek-wrap.ek-xxs .ek-compact { padding:31px 5px 3px; }
+.ek-wrap.ek-xxs .ek-period { top:27px; right:5px; font-size:8px; padding:2px 5px; }
+.ek-wrap.ek-xxs .ek-mini-grid { gap:2px; padding-top:4px; }
+.ek-wrap.ek-xxs .ek-mini-row { grid-template-columns:10px minmax(0,1fr); gap:3px; }
+.ek-wrap.ek-xxs .ek-mini-label { display:none; }
+.ek-wrap.ek-xxs .ek-value-box { grid-column:2; width:100%; }
+.ek-wrap.ek-xxs .ek-dot { width:7px; height:7px; }
+.ek-wrap.ek-xxs .ek-mini-main { font-size:11px; }
+.ek-wrap.ek-xxs .ek-mini-sub { font-size:7.5px; margin-top:0; }
+.ek-wrap.ek-xxs .ek-foot { display:none; }
 </style>
 
 <div class="ek-wrap" id="ekWrap">
@@ -158,9 +171,10 @@ function adaptToTileSize() {
     const wrap = document.getElementById('ekWrap');
     const w = wrap.clientWidth;
     const h = wrap.clientHeight;
-    wrap.classList.remove('ek-sm','ek-xs');
-    if (w < 205 || h < 145) wrap.classList.add('ek-xs');
-    else if (w < 285 || h < 205) wrap.classList.add('ek-sm');
+    wrap.classList.remove('ek-sm','ek-xs','ek-xxs');
+    if (w < 175 || h < 118) wrap.classList.add('ek-xxs');
+    else if (w < 220 || h < 150) wrap.classList.add('ek-xs');
+    else if (w < 300 || h < 210) wrap.classList.add('ek-sm');
 }
 
 function renderAll() {
