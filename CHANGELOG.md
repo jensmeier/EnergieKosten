@@ -1,3 +1,12 @@
+# BUILD7
+- Kleine Kachel komplett neu gestaltet: dunkle Karte passend zu den übrigen Tablet-Kacheln, kompakter Kopf „Energie“, Zeitraum-Chip und klarere Wertehierarchie.
+- Echte Auto-Größe innerhalb der von Symcon vorgegebenen Kachelfläche: Schrift, Abstände und Radien skalieren anhand von Breite und Höhe per ResizeObserver.
+- Detailansicht für 10-Zoll-Tablet im Querformat neu strukturiert und auf eine Bildschirmhöhe begrenzt; kein vertikales Scrollen mehr.
+- Diagramm nutzt flexibel den verfügbaren oberen Bereich; horizontales Wischen zu älteren Tag/Woche/Monat/Jahr-Werten bleibt erhalten.
+- Netzbezug, Einspeisung, Heizstab und Jahresrechnung stehen als vier kompakte Karten nebeneinander unter dem Diagramm.
+- Jahresrechnung zeigt weiterhin Einspeisung/Netzbezug bisher + Hochrechnung sowie Energiebilanz, jetzt platzsparend.
+- Balken-Detailinformation wird schwebend eingeblendet und vergrößert die Seite nicht.
+
 # BUILD6
 - Jahresrechnung vereinfacht: Einspeisung und Netzbezug jeweils „Bis jetzt“ in kWh + Euro sowie Hochrechnung bis 31.12.
 - Deckungs-Prozentanzeigen aus der Jahresrechnung entfernt.

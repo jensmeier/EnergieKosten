@@ -1,7 +1,7 @@
-ENERGIE & KOSTEN – V1 BUILD4 (Raspberry Pi / IP-Symcon 9.0)
+ENERGIE & KOSTEN – V1 BUILD7 (Raspberry Pi / IP-Symcon 9.0)
 
 1) Datensicherung erstellen.
-2) Vorhandenen Ordner /var/lib/symcon/modules/EnergieKosten durch BUILD4 ersetzen.
+2) Vorhandenen Ordner /var/lib/symcon/modules/EnergieKosten durch BUILD7 ersetzen.
 3) Prüfen:
    /var/lib/symcon/modules/EnergieKosten/library.json
    /var/lib/symcon/modules/EnergieKosten/EnergieKosten/module.php

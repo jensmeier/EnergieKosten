@@ -2,7 +2,7 @@
     "elements": [
         {
             "type": "Label",
-            "caption": "Energie & Kosten – V1 BUILD6. Detaildiagramm auf dem Tablet horizontal durch die geloggte Historie scrollen. Jahresrechnung zeigt Einspeisung und Netzbezug jeweils bisher + Hochrechnung sowie die Energiebilanz in Euro."
+            "caption": "Energie & Kosten – V1 BUILD7. Tablet-Optimierung: dunkle automatisch skalierende Kachel und kompakte Vollbildansicht ohne vertikales Scrollen auf 10-Zoll-Tablet im Querformat."
         },
         {
             "type": "ExpansionPanel",
@@ -103,7 +103,7 @@
         },
         {
             "type": "Label",
-            "caption": "BUILD6: Tag bis 7 Tage zurück; Woche und 30-Tage-Ansicht bis ca. 400 Tage zurück horizontal scrollen. Antippen eines Balkens zeigt kWh, Euro und Energiebilanz. Jahresrechnung ohne Heizstab/Deckungsprozente: bisherige Werte + Hochrechnung + Energiebilanz. Vorhandene IDs/Skripte bleiben unverändert."
+            "caption": "BUILD7: Kachel passt Schrift und Abstände dynamisch an die tatsächlich verfügbare Symcon-Kachelgröße an. Detailansicht nutzt die gesamte Bildschirmhöhe: Diagramm oben, vier kompakte Informationskarten unten. Kein vertikales Scrollen im Querformat; horizontales Wischen im Diagramm bleibt erhalten."
         }
     ],
     "actions": [

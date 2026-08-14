@@ -392,7 +392,7 @@ class EnergieKosten extends IPSModuleStrict
             $historyHeatDaily = $this->GetCounterAggregates($archiveID, $heaterTotalID, 1, $historyStart, $now, 1.0, $this->FirstTimeFor($meta, $heaterTotalID));
         }
 
-        // BUILD6: Für die Tagesansicht werden auch die letzten 7 Tage stündlich
+        // BUILD7: Für die Tagesansicht werden auch die letzten 7 Tage stündlich
         // mitgegeben. Damit kann die Detailseite auf dem Tablet horizontal in die
         // Vergangenheit gescrollt werden, ohne eine zusätzliche ID oder Anfrage.
         $hourGrid = $this->GetHourlyPositiveDeltasFromResetVariable($archiveID, self::GRID_KWH_DAY, $dayHistoryStart, $now);
@@ -447,7 +447,7 @@ class EnergieKosten extends IPSModuleStrict
         $yearGridEuro = (float) $summary['year']['grid']['euro'];
         $yearFeedEuro = (float) $summary['year']['feed']['euro'];
 
-        // BUILD6: verständliche Jahreshochrechnung statt Deckungs-Prozentwerten.
+        // BUILD7: verständliche Jahreshochrechnung statt Deckungs-Prozentwerten.
         // Wenn eine vollständige saisonale Prognose vorhanden ist, wird sie genutzt.
         // Fehlen Vergleichsmonate, gibt es trotzdem eine klar als "vorläufig"
         // gekennzeichnete lineare Hochrechnung auf Basis des tatsächlich erfassten

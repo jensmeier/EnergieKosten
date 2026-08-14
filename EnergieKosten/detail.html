@@ -1,311 +1,152 @@
 <style>
-:root {
-    color-scheme: light dark;
-    --ek-bg:#f5f7fa; --ek-card:#ffffff; --ek-text:#18202a; --ek-muted:#6b7480;
-    --ek-border:rgba(24,32,42,.12); --ek-grid:#d9534f; --ek-feed:#2f9e62;
-    --ek-heat:#e28b2d; --ek-accent:#3478f6; --ek-soft:rgba(52,120,246,.08);
+:root{
+    color-scheme:light dark;
+    --ek-bg:#eef2f6;--ek-card:#ffffff;--ek-text:#17202b;--ek-muted:#687382;--ek-border:rgba(23,32,43,.12);
+    --ek-grid:#d9534f;--ek-feed:#2f9e62;--ek-heat:#e28b2d;--ek-accent:#3478f6;--ek-soft:rgba(52,120,246,.08);
 }
-@media (prefers-color-scheme: dark) {
-    :root { --ek-bg:#171a1f; --ek-card:#21252b; --ek-text:#f3f5f7; --ek-muted:#a6adb7; --ek-border:rgba(255,255,255,.11); --ek-soft:rgba(52,120,246,.13); }
-}
+@media(prefers-color-scheme:dark){:root{--ek-bg:#111722;--ek-card:#1a2230;--ek-text:#f4f7fb;--ek-muted:#aab5c4;--ek-border:rgba(255,255,255,.10);--ek-soft:rgba(52,120,246,.14)}}
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ek-text);background:var(--ek-bg)}
-.ek-wrap{width:100%;padding:16px 18px 24px}
-.ek-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:12px}
-.ek-headline{font-size:20px;font-weight:800}.ek-sub{font-size:12px;color:var(--ek-muted);margin-top:3px}
-.ek-card{background:var(--ek-card);border:1px solid var(--ek-border);border-radius:14px;padding:14px}
-.ek-chart-card{padding:14px 14px 12px}
-.ek-chart-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px}
-.ek-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ek-muted)}
-.ek-legend span{display:flex;align-items:center;gap:6px}.ek-legend i{display:inline-block;width:10px;height:10px;border-radius:3px}
-.ek-range-info{display:flex;align-items:center;gap:9px;min-width:0}.ek-range-title{font-size:13px;font-weight:750;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ek-now{border:1px solid var(--ek-border);background:transparent;color:var(--ek-text);border-radius:9px;padding:6px 10px;font-size:11px;cursor:pointer}
-.ek-scroll-hint{font-size:10px;color:var(--ek-muted);text-align:right;margin:2px 0 4px}
-.ek-chart-scroll{width:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
-.ek-pages{display:flex;align-items:stretch;width:100%}
-.ek-chart-page{flex:0 0 100%;width:100%;height:300px;scroll-snap-align:start;display:flex;align-items:center;justify-content:center}
-.ek-chart-page svg{width:100%;height:100%;display:block;touch-action:pan-x}
-.ek-empty{height:220px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ek-muted)}
-.ek-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:8px}.ek-tab{border:1px solid var(--ek-border);background:transparent;color:var(--ek-text);border-radius:9px;padding:8px 4px;cursor:pointer;font-size:12px}.ek-tab.active{background:var(--ek-accent);border-color:var(--ek-accent);color:white}.ek-tab small{display:block;font-size:9px;opacity:.82;margin-top:1px}
-.ek-visible{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.ek-vis{border:1px solid var(--ek-border);border-radius:10px;padding:8px 10px}.ek-vis label{display:block;font-size:10px;color:var(--ek-muted);margin-bottom:2px}.ek-vis strong{font-size:14px}.ek-vis small{display:block;color:var(--ek-muted);font-size:10px;margin-top:1px}
-.ek-point-info{display:none;margin-top:8px;border-radius:10px;background:var(--ek-soft);padding:9px 11px;font-size:12px}.ek-point-info.show{display:block}.ek-point-info strong{display:block;margin-bottom:4px}.ek-point-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.ek-point-grid span{min-width:0}.ek-point-grid small{display:block;color:var(--ek-muted)}
-.ek-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}.ek-stat-title{font-size:14px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:7px}.ek-dot{width:10px;height:10px;border-radius:50%;display:inline-block}.grid{background:var(--ek-grid)}.feed{background:var(--ek-feed)}.heat{background:var(--ek-heat)}
-.ek-stat-table{width:100%;border-collapse:collapse;font-size:12px}.ek-stat-table td{padding:6px 0;border-top:1px solid var(--ek-border);vertical-align:top}.ek-stat-table td:last-child{text-align:right;font-weight:700}.ek-stat-table small{display:block;color:var(--ek-muted);font-weight:400;margin-top:1px}
-.ek-year{margin-top:12px}.ek-year-title{font-size:15px;font-weight:800;margin-bottom:10px}.ek-year-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.ek-year-box{border:1px solid var(--ek-border);border-radius:12px;padding:12px}.ek-year-box h3{margin:0 0 8px;font-size:14px;display:flex;align-items:center;gap:7px}.ek-yrow{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--ek-border)}.ek-yrow:first-of-type{border-top:0}.ek-yrow span{font-size:11px;color:var(--ek-muted)}.ek-yrow b{text-align:right;font-size:13px}.ek-yrow b small{display:block;color:var(--ek-muted);font-size:10px;font-weight:500;margin-top:2px}
-.ek-balance-box{margin-top:12px;border-radius:12px;background:var(--ek-soft);padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.ek-balance-label{font-size:11px;color:var(--ek-muted)}.ek-balance-value{font-size:24px;font-weight:850;margin-top:2px}.ek-balance-note{font-size:10px;color:var(--ek-muted);margin-top:2px}.ek-note{margin-top:10px;padding:9px 11px;border-radius:10px;border:1px solid var(--ek-border);color:var(--ek-muted);font-size:11px}
-@media(max-width:860px){.ek-stats{grid-template-columns:1fr}.ek-year-grid{grid-template-columns:1fr}.ek-chart-page{height:245px}.ek-wrap{padding:12px}.ek-headline{font-size:18px}.ek-balance-box{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.ek-chart-top{align-items:flex-start}.ek-range-info{flex-direction:column;align-items:flex-end;gap:4px}.ek-visible{grid-template-columns:1fr}.ek-point-grid{grid-template-columns:1fr}.ek-balance-box{grid-template-columns:1fr}.ek-tabs{gap:4px}.ek-tab{font-size:11px;padding:7px 2px}.ek-chart-page{height:220px}.ek-card{padding:11px}.ek-balance-value{font-size:21px}}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ek-text);background:var(--ek-bg)}
+button{font:inherit}
+.ek-shell{--u:1;width:100%;height:100%;min-width:0;min-height:0;padding:calc(9px * var(--u)) calc(11px * var(--u));display:grid;grid-template-rows:auto minmax(0,1fr);gap:calc(7px * var(--u));overflow:hidden}
+.ek-head{display:flex;justify-content:space-between;align-items:center;gap:10px;min-width:0}
+.ek-headline{font-size:calc(18px * var(--u));font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ek-sub{font-size:calc(9px * var(--u));color:var(--ek-muted);margin-top:1px}
+.ek-main{display:grid;grid-template-rows:minmax(0,1.78fr) minmax(0,.82fr);gap:calc(8px * var(--u));min-height:0}
+.ek-card{min-width:0;min-height:0;background:var(--ek-card);border:1px solid var(--ek-border);border-radius:calc(11px * var(--u));overflow:hidden}
+.ek-chart-card{position:relative;padding:calc(9px * var(--u));display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:calc(5px * var(--u));min-height:0}
+.ek-chart-top{display:flex;justify-content:space-between;align-items:center;gap:10px;min-width:0}
+.ek-legend{display:flex;gap:calc(13px * var(--u));font-size:calc(10px * var(--u));color:var(--ek-muted);white-space:nowrap}
+.ek-legend span{display:flex;align-items:center;gap:5px}.ek-legend i{display:inline-block;width:calc(8px * var(--u));height:calc(8px * var(--u));border-radius:3px}
+.ek-range-info{display:flex;align-items:center;gap:calc(7px * var(--u));min-width:0;margin-left:auto}.ek-range-title{font-size:calc(10.5px * var(--u));font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}.ek-now{border:1px solid var(--ek-border);background:transparent;color:var(--ek-text);border-radius:8px;padding:calc(4px * var(--u)) calc(8px * var(--u));font-size:calc(9px * var(--u));cursor:pointer}.ek-scroll-hint{font-size:calc(8px * var(--u));color:var(--ek-muted);white-space:nowrap}
+.ek-chart-scroll{width:100%;height:100%;min-height:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.ek-pages{display:flex;align-items:stretch;width:100%;height:100%;min-height:0}.ek-chart-page{flex:0 0 100%;width:100%;height:100%;min-height:0;scroll-snap-align:start}.ek-chart-page svg{width:100%;height:100%;display:block;touch-action:pan-x}.ek-empty{height:100%;display:flex;align-items:center;justify-content:center;font-size:calc(10px * var(--u));color:var(--ek-muted)}
+.ek-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:calc(5px * var(--u))}.ek-tab{border:1px solid var(--ek-border);background:transparent;color:var(--ek-text);border-radius:8px;padding:calc(5px * var(--u)) 3px;cursor:pointer;font-size:calc(10px * var(--u));line-height:1.05}.ek-tab.active{background:var(--ek-accent);border-color:var(--ek-accent);color:#fff}.ek-tab small{display:block;font-size:calc(7px * var(--u));opacity:.82;margin-top:1px}
+.ek-visible{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:calc(5px * var(--u))}.ek-vis{min-width:0;border:1px solid var(--ek-border);border-radius:8px;padding:calc(5px * var(--u)) calc(7px * var(--u));display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;column-gap:6px}.ek-vis label{grid-column:1/-1;font-size:calc(7.5px * var(--u));color:var(--ek-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ek-vis strong{font-size:calc(11px * var(--u));white-space:nowrap}.ek-vis small{font-size:calc(7.5px * var(--u));color:var(--ek-muted);white-space:nowrap;text-align:right}
+.ek-point-info{display:none;position:absolute;left:calc(58px * var(--u));right:calc(58px * var(--u));top:calc(38px * var(--u));z-index:8;border:1px solid var(--ek-border);border-radius:9px;background:color-mix(in srgb,var(--ek-card) 92%,transparent);backdrop-filter:blur(8px);padding:calc(7px * var(--u)) calc(9px * var(--u));font-size:calc(9px * var(--u));box-shadow:0 4px 18px rgba(0,0,0,.18)}.ek-point-info.show{display:block}.ek-point-info strong{display:block;margin-bottom:3px}.ek-point-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.ek-point-grid small{display:block;color:var(--ek-muted);font-size:calc(7.5px * var(--u))}
+.ek-bottom{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:calc(8px * var(--u));min-height:0}
+.ek-stat,.ek-year{padding:calc(8px * var(--u));display:flex;flex-direction:column;min-height:0}
+.ek-stat-title,.ek-year-title{font-size:calc(11.5px * var(--u));font-weight:800;margin-bottom:calc(4px * var(--u));display:flex;align-items:center;gap:6px;white-space:nowrap}.ek-dot{width:calc(8px * var(--u));height:calc(8px * var(--u));border-radius:50%;display:inline-block}.grid{background:var(--ek-grid)}.feed{background:var(--ek-feed)}.heat{background:var(--ek-heat)}
+.ek-stat-table{width:100%;border-collapse:collapse;font-size:calc(9px * var(--u));table-layout:fixed}.ek-stat-table td{padding:calc(3px * var(--u)) 0;border-top:1px solid var(--ek-border);vertical-align:middle}.ek-stat-table td:first-child{width:32%;color:var(--ek-muted)}.ek-stat-table td:last-child{text-align:right;font-weight:750;white-space:nowrap}.ek-stat-table small{display:block;color:var(--ek-muted);font-size:calc(7px * var(--u));font-weight:500;margin-top:1px}
+.ek-year-lines{display:grid;grid-template-columns:1fr;min-height:0}.ek-yline{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center;padding:calc(3px * var(--u)) 0;border-top:1px solid var(--ek-border);font-size:calc(8.5px * var(--u))}.ek-yline span{color:var(--ek-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ek-yline b{text-align:right;white-space:nowrap}.ek-yline b small{display:block;font-size:calc(6.8px * var(--u));font-weight:500;color:var(--ek-muted)}
+.ek-balance{margin-top:auto;border-top:1px solid var(--ek-border);padding-top:calc(4px * var(--u));display:grid;grid-template-columns:1fr 1fr;gap:6px}.ek-balance label{display:block;font-size:calc(7px * var(--u));color:var(--ek-muted);white-space:nowrap}.ek-balance strong{font-size:calc(13px * var(--u));white-space:nowrap}.ek-proj-note{margin-top:2px;font-size:calc(6.8px * var(--u));line-height:1.15;color:var(--ek-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-height:650px){.ek-shell{--u:.88}.ek-sub{display:none}.ek-main{grid-template-rows:minmax(0,1.65fr) minmax(0,.85fr)}}
+@media(max-height:560px){.ek-shell{--u:.76}.ek-scroll-hint{display:none}.ek-main{grid-template-rows:minmax(0,1.55fr) minmax(0,.95fr)}}
+@media(max-width:980px){.ek-shell{--u:.9}.ek-main{grid-template-rows:minmax(0,1.6fr) minmax(0,.95fr)}.ek-stat-title,.ek-year-title{font-size:calc(10.5px * var(--u))}}
 </style>
 
-<div class="ek-wrap">
+<div class="ek-shell" id="ekShell">
     <div class="ek-head">
-        <div>
-            <div class="ek-headline">Verbrauch, Einspeisung &amp; Heizstab</div>
-            <div class="ek-sub" id="updatedText">—</div>
-        </div>
+        <div><div class="ek-headline">Verbrauch, Einspeisung &amp; Heizstab</div><div class="ek-sub" id="updatedText">—</div></div>
+        <div class="ek-scroll-hint" id="scrollHint">← ältere Werte</div>
     </div>
 
-    <div class="ek-card ek-chart-card">
-        <div class="ek-chart-top">
-            <div class="ek-legend">
-                <span><i style="background:var(--ek-grid)"></i> Netzbezug</span>
-                <span><i style="background:var(--ek-feed)"></i> Einspeisung</span>
+    <div class="ek-main">
+        <section class="ek-card ek-chart-card">
+            <div class="ek-chart-top">
+                <div class="ek-legend"><span><i style="background:var(--ek-grid)"></i>Netzbezug</span><span><i style="background:var(--ek-feed)"></i>Einspeisung</span></div>
+                <div class="ek-range-info"><div class="ek-range-title" id="rangeTitle">—</div><button class="ek-now" id="jumpLatest" type="button">Aktuell</button></div>
             </div>
-            <div class="ek-range-info">
-                <div class="ek-range-title" id="rangeTitle">—</div>
-                <button class="ek-now" id="jumpLatest" type="button">Aktuell</button>
+            <div class="ek-chart-scroll" id="chartScroll"><div class="ek-pages" id="chartPages"></div></div>
+            <div class="ek-tabs">
+                <button class="ek-tab" data-range="day">Tag<small>Stunden</small></button>
+                <button class="ek-tab" data-range="week">Woche<small>7 Tage</small></button>
+                <button class="ek-tab active" data-range="month">Monat<small>30 Tage</small></button>
+                <button class="ek-tab" data-range="year">Jahr<small>Monate</small></button>
             </div>
-        </div>
-        <div class="ek-scroll-hint" id="scrollHint">← nach links zu älteren Werten scrollen</div>
-        <div class="ek-chart-scroll" id="chartScroll">
-            <div class="ek-pages" id="chartPages"></div>
-        </div>
-        <div class="ek-tabs">
-            <button class="ek-tab" data-range="day">Tag<small>Stunden</small></button>
-            <button class="ek-tab" data-range="week">Woche<small>7 Tage</small></button>
-            <button class="ek-tab active" data-range="month">Monat<small>30 Tage</small></button>
-            <button class="ek-tab" data-range="year">Jahr<small>Monate</small></button>
-        </div>
-        <div class="ek-visible">
-            <div class="ek-vis"><label>Netzbezug im sichtbaren Zeitraum</label><strong id="visGrid">—</strong><small id="visGridEuro">—</small></div>
-            <div class="ek-vis"><label>Einspeisung im sichtbaren Zeitraum</label><strong id="visFeed">—</strong><small id="visFeedEuro">—</small></div>
-            <div class="ek-vis"><label>Energiebilanz</label><strong id="visBalance">—</strong><small>Einspeisevergütung − Netzbezugskosten</small></div>
-        </div>
-        <div class="ek-point-info" id="pointInfo"></div>
-    </div>
+            <div class="ek-visible">
+                <div class="ek-vis"><label>Netzbezug</label><strong id="visGrid">—</strong><small id="visGridEuro">—</small></div>
+                <div class="ek-vis"><label>Einspeisung</label><strong id="visFeed">—</strong><small id="visFeedEuro">—</small></div>
+                <div class="ek-vis"><label>Energiebilanz</label><strong id="visBalance">—</strong><small>Einspeisung − Bezug</small></div>
+            </div>
+            <div class="ek-point-info" id="pointInfo"></div>
+        </section>
 
-    <div class="ek-stats">
-        <div class="ek-card"><div class="ek-stat-title"><span class="ek-dot grid"></span>Netzbezug</div><table class="ek-stat-table" id="gridTable"></table></div>
-        <div class="ek-card"><div class="ek-stat-title"><span class="ek-dot feed"></span>Einspeisung</div><table class="ek-stat-table" id="feedTable"></table></div>
-        <div class="ek-card"><div class="ek-stat-title"><span class="ek-dot heat"></span>Heizstab / Heizöl</div><table class="ek-stat-table" id="heatTable"></table></div>
-    </div>
-
-    <div class="ek-card ek-year">
-        <div class="ek-year-title" id="yearTitle">Jahresrechnung</div>
-        <div class="ek-year-grid">
-            <div class="ek-year-box">
-                <h3><span class="ek-dot feed"></span>Einspeisung</h3>
-                <div class="ek-yrow"><span>Bis jetzt</span><b id="yearFeedActual">—</b></div>
-                <div class="ek-yrow"><span>Hochrechnung 31.12.</span><b id="yearFeedForecast">—</b></div>
-            </div>
-            <div class="ek-year-box">
-                <h3><span class="ek-dot grid"></span>Netzbezug</h3>
-                <div class="ek-yrow"><span>Bis jetzt</span><b id="yearGridActual">—</b></div>
-                <div class="ek-yrow"><span>Hochrechnung 31.12.</span><b id="yearGridForecast">—</b></div>
-            </div>
+        <div class="ek-bottom">
+            <section class="ek-card ek-stat"><div class="ek-stat-title"><span class="ek-dot grid"></span>Netzbezug</div><table class="ek-stat-table" id="gridTable"></table></section>
+            <section class="ek-card ek-stat"><div class="ek-stat-title"><span class="ek-dot feed"></span>Einspeisung</div><table class="ek-stat-table" id="feedTable"></table></section>
+            <section class="ek-card ek-stat"><div class="ek-stat-title"><span class="ek-dot heat"></span>Heizstab / Heizöl</div><table class="ek-stat-table" id="heatTable"></table></section>
+            <section class="ek-card ek-year">
+                <div class="ek-year-title" id="yearTitle">Jahresrechnung</div>
+                <div class="ek-year-lines">
+                    <div class="ek-yline"><span>Einspeisung bisher</span><b id="yearFeedActual">—</b></div>
+                    <div class="ek-yline"><span>Einspeisung 31.12.</span><b id="yearFeedForecast">—</b></div>
+                    <div class="ek-yline"><span>Netzbezug bisher</span><b id="yearGridActual">—</b></div>
+                    <div class="ek-yline"><span>Netzbezug 31.12.</span><b id="yearGridForecast">—</b></div>
+                </div>
+                <div class="ek-balance">
+                    <div><label>Energiebilanz bisher</label><strong id="yearBalanceActual">—</strong></div>
+                    <div><label>Hochrechnung</label><strong id="yearBalanceForecast">—</strong></div>
+                </div>
+                <div class="ek-proj-note" id="projectionMethod">—</div>
+            </section>
         </div>
-        <div class="ek-balance-box">
-            <div>
-                <div class="ek-balance-label">Energiebilanz bis jetzt</div>
-                <div class="ek-balance-value" id="yearBalanceActual">—</div>
-                <div class="ek-balance-note">Einspeisevergütung − Netzbezugskosten</div>
-            </div>
-            <div>
-                <div class="ek-balance-label">Energiebilanz Hochrechnung 31.12.</div>
-                <div class="ek-balance-value" id="yearBalanceForecast">—</div>
-                <div class="ek-balance-note" id="projectionMethod">—</div>
-            </div>
-        </div>
-        <div class="ek-note" id="yearNote">—</div>
     </div>
-
-    <div class="ek-note" id="coverageNote">—</div>
 </div>
 
 <script>
-const ekData = __DETAIL_DATA__;
-let activeRange = 'month';
-let activePages = [];
-let currentPageIndex = 0;
-let scrollTimer = null;
-const validNumber = n => n !== null && n !== '' && Number.isFinite(Number(n));
-const num = n => validNumber(n) ? Number(n) : 0;
-const euro = n => validNumber(n) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €' : '—';
-const signedEuro = n => validNumber(n) ? (Number(n)>=0?'+':'') + Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €' : '—';
-const kwh = n => validNumber(n) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' kWh' : '—';
-const liter = n => validNumber(n) ? Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' L Öl' : '—';
-const fmtDate = ts => ts ? new Date(ts*1000).toLocaleDateString('de-DE') : 'noch keine Archivdaten';
-const dateKey = ts => {const d=new Date(ts*1000);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
-const dayStartMs = d => new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();
-
+const ekData=__DETAIL_DATA__;
+let activeRange='month',activePages=[],currentPageIndex=0,scrollTimer=null;
+const validNumber=n=>n!==null&&n!==''&&Number.isFinite(Number(n));
+const num=n=>validNumber(n)?Number(n):0;
+const euro=n=>validNumber(n)?Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €':'—';
+const signedEuro=n=>validNumber(n)?(Number(n)>=0?'+':'')+Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €':'—';
+const kwh=n=>validNumber(n)?Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' kWh':'—';
+const liter=n=>validNumber(n)?Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' L Öl':'—';
+const dateKey=ts=>{const d=new Date(ts*1000);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const dayStartMs=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();
 function rowsFor(type){
-    const periods=[['Tag','today'],['Woche','week'],['Monat','month'],['Jahr','year']];
-    return periods.map(([label,key])=>{
-        const v=ekData.summary?.[key]?.[type] || {};
-        const second=type==='heater' ? liter(v.oilLiter)+' gespart' : euro(v.euro);
+    return [['Tag','today'],['Woche','week'],['Monat','month'],['Jahr','year']].map(([label,key])=>{
+        const v=ekData.summary?.[key]?.[type]||{};const second=type==='heater'?liter(v.oilLiter)+' gespart':euro(v.euro);
         return `<tr><td>${label}</td><td>${kwh(v.kwh)}<small>${second}</small></td></tr>`;
     }).join('');
 }
-function renderTables(){
-    if(!ekData?.ok)return;
-    document.getElementById('gridTable').innerHTML=rowsFor('grid');
-    document.getElementById('feedTable').innerHTML=rowsFor('feed');
-    document.getElementById('heatTable').innerHTML=rowsFor('heater');
-}
-
-function labelForPoint(d, range){
-    const dt=new Date(d.ts*1000);
-    if(range==='day') return dt.toLocaleString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-    if(range==='year') return dt.toLocaleDateString('de-DE',{month:'long',year:'numeric'});
-    return dt.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'});
-}
-function rangeLabel(startTs,endTs,range){
-    const a=new Date(startTs*1000),b=new Date(endTs*1000);
-    if(range==='day' && dateKey(startTs)===dateKey(endTs)) return a.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
-    if(range==='year' && a.getFullYear()===b.getFullYear()) return String(a.getFullYear());
-    const left=a.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:a.getFullYear()===b.getFullYear()?undefined:'numeric'});
-    const right=b.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
-    return `${left} – ${right}`;
-}
-function startOfWeekTs(ts){
-    const d=new Date(ts*1000); const jsDay=d.getDay(); const diff=(jsDay+6)%7;
-    return Math.floor((dayStartMs(d)-diff*86400000)/1000);
-}
+function renderTables(){if(!ekData?.ok)return;gridTable.innerHTML=rowsFor('grid');feedTable.innerHTML=rowsFor('feed');heatTable.innerHTML=rowsFor('heater')}
+function labelForPoint(d,range){const dt=new Date(d.ts*1000);if(range==='day')return dt.toLocaleString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});if(range==='year')return dt.toLocaleDateString('de-DE',{month:'long',year:'numeric'});return dt.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'})}
+function rangeLabel(startTs,endTs,range){const a=new Date(startTs*1000),b=new Date(endTs*1000);if(range==='day'&&dateKey(startTs)===dateKey(endTs))return a.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});if(range==='year'&&a.getFullYear()===b.getFullYear())return String(a.getFullYear());const l=a.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:a.getFullYear()===b.getFullYear()?undefined:'numeric'}),r=b.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});return `${l} – ${r}`}
+function startOfWeekTs(ts){const d=new Date(ts*1000),diff=(d.getDay()+6)%7;return Math.floor((dayStartMs(d)-diff*86400000)/1000)}
 function buildPages(range){
-    const data=[...(ekData?.charts?.[range]||[])].sort((a,b)=>a.ts-b.ts);
-    if(!data.length)return [];
-    const pages=[];
-    if(range==='day'){
-        const groups=new Map();
-        data.forEach(d=>{const k=dateKey(d.ts);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(d)});
-        groups.forEach(points=>pages.push({points,title:rangeLabel(points[0].ts,points[points.length-1].ts,range)}));
-    }else if(range==='week'){
-        const groups=new Map();
-        data.forEach(d=>{const k=startOfWeekTs(d.ts);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(d)});
-        [...groups.keys()].sort((a,b)=>a-b).forEach(k=>{const points=groups.get(k);pages.push({points,title:rangeLabel(points[0].ts,points[points.length-1].ts,range)});});
-    }else if(range==='month'){
-        let end=data.length;
-        const reverse=[];
-        while(end>0){const start=Math.max(0,end-30),points=data.slice(start,end);reverse.push({points,title:rangeLabel(points[0].ts,points[points.length-1].ts,range)});end=start;}
-        pages.push(...reverse.reverse());
-    }else{
-        const groups=new Map();
-        data.forEach(d=>{const y=new Date(d.ts*1000).getFullYear();if(!groups.has(y))groups.set(y,[]);groups.get(y).push(d)});
-        [...groups.keys()].sort((a,b)=>a-b).forEach(y=>pages.push({points:groups.get(y),title:String(y)}));
-    }
-    return pages.filter(p=>p.points.length>0);
+    const data=[...(ekData?.charts?.[range]||[])].sort((a,b)=>a.ts-b.ts);if(!data.length)return[];const pages=[];
+    if(range==='day'){const g=new Map();data.forEach(d=>{const k=dateKey(d.ts);if(!g.has(k))g.set(k,[]);g.get(k).push(d)});g.forEach(points=>pages.push({points,title:rangeLabel(points[0].ts,points[points.length-1].ts,range)}));}
+    else if(range==='week'){const g=new Map();data.forEach(d=>{const k=startOfWeekTs(d.ts);if(!g.has(k))g.set(k,[]);g.get(k).push(d)});[...g.keys()].sort((a,b)=>a-b).forEach(k=>{const points=g.get(k);pages.push({points,title:rangeLabel(points[0].ts,points[points.length-1].ts,range)})});}
+    else if(range==='month'){let end=data.length;const rev=[];while(end>0){const start=Math.max(0,end-30),points=data.slice(start,end);rev.push({points,title:rangeLabel(points[0].ts,points[points.length-1].ts,range)});end=start}pages.push(...rev.reverse());}
+    else{const g=new Map();data.forEach(d=>{const y=new Date(d.ts*1000).getFullYear();if(!g.has(y))g.set(y,[]);g.get(y).push(d)});[...g.keys()].sort((a,b)=>a-b).forEach(y=>pages.push({points:g.get(y),title:String(y)}));}
+    return pages.filter(p=>p.points.length);
 }
 function svgForPage(page,range,pageIndex){
-    const data=page.points,W=1100,H=300,left=54,right=12,top=12,bottom=46,plotW=W-left-right,plotH=H-top-bottom;
-    const maxVal=Math.max(.1,...data.flatMap(d=>[num(d.grid),num(d.feed)]));
-    const count=Math.max(1,data.length),groupW=plotW/count,barW=Math.max(3,Math.min(20,groupW*.34));
+    const data=page.points,W=1100,H=300,left=52,right=10,top=8,bottom=38,plotW=W-left-right,plotH=H-top-bottom,maxVal=Math.max(.1,...data.flatMap(d=>[num(d.grid),num(d.feed)])),count=Math.max(1,data.length),groupW=plotW/count,barW=Math.max(3,Math.min(20,groupW*.34));
     let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Netzbezug und Einspeisung ${page.title}">`;
-    for(let i=0;i<=4;i++){
-        const y=top+plotH*i/4,val=maxVal*(1-i/4);
-        svg+=`<line x1="${left}" y1="${y}" x2="${W-right}" y2="${y}" stroke="var(--ek-border)" stroke-width="1"/>`;
-        svg+=`<text x="${left-7}" y="${y+4}" text-anchor="end" font-size="10" fill="var(--ek-muted)">${val.toLocaleString('de-DE',{maximumFractionDigits:1})}</text>`;
-    }
-    const labelEvery=count>25?5:(count>14?3:(count>9?2:1));
-    data.forEach((d,i)=>{
-        const x=left+groupW*i+groupW/2,gh=num(d.grid)/maxVal*plotH,fh=num(d.feed)/maxVal*plotH;
-        svg+=`<g class="ek-hit" data-page="${pageIndex}" data-point="${i}">`;
-        svg+=`<rect x="${x-groupW/2}" y="${top}" width="${groupW}" height="${plotH}" fill="transparent"/>`;
-        svg+=`<rect x="${x-barW-1}" y="${top+plotH-gh}" width="${barW}" height="${gh}" rx="2" fill="var(--ek-grid)"/>`;
-        svg+=`<rect x="${x+1}" y="${top+plotH-fh}" width="${barW}" height="${fh}" rx="2" fill="var(--ek-feed)"/>`;
-        svg+=`</g>`;
-        if(i%labelEvery===0 || i===count-1){
-            let lbl=d.label||'';
-            if(range==='day') lbl=new Date(d.ts*1000).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-            if(range==='year') lbl=new Date(d.ts*1000).toLocaleDateString('de-DE',{month:'short'});
-            svg+=`<text x="${x}" y="${H-18}" text-anchor="middle" font-size="9" fill="var(--ek-muted)">${lbl}</text>`;
-        }
-    });
-    svg+=`<text x="8" y="14" font-size="10" fill="var(--ek-muted)">kWh</text></svg>`;
-    return svg;
+    for(let i=0;i<=4;i++){const y=top+plotH*i/4,val=maxVal*(1-i/4);svg+=`<line x1="${left}" y1="${y}" x2="${W-right}" y2="${y}" stroke="var(--ek-border)" stroke-width="1"/><text x="${left-7}" y="${y+4}" text-anchor="end" font-size="10" fill="var(--ek-muted)">${val.toLocaleString('de-DE',{maximumFractionDigits:1})}</text>`}
+    const every=count>25?5:(count>14?3:(count>9?2:1));
+    data.forEach((d,i)=>{const x=left+groupW*i+groupW/2,gh=num(d.grid)/maxVal*plotH,fh=num(d.feed)/maxVal*plotH;svg+=`<g class="ek-hit" data-page="${pageIndex}" data-point="${i}"><rect x="${x-groupW/2}" y="${top}" width="${groupW}" height="${plotH}" fill="transparent"/><rect x="${x-barW-1}" y="${top+plotH-gh}" width="${barW}" height="${gh}" rx="2" fill="var(--ek-grid)"/><rect x="${x+1}" y="${top+plotH-fh}" width="${barW}" height="${fh}" rx="2" fill="var(--ek-feed)"/></g>`;if(i%every===0||i===count-1){let lbl=d.label||'';if(range==='day')lbl=new Date(d.ts*1000).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});if(range==='year')lbl=new Date(d.ts*1000).toLocaleDateString('de-DE',{month:'short'});svg+=`<text x="${x}" y="${H-14}" text-anchor="middle" font-size="9" fill="var(--ek-muted)">${lbl}</text>`}});
+    return svg+`<text x="7" y="12" font-size="9" fill="var(--ek-muted)">kWh</text></svg>`;
 }
 function renderChart(){
-    const pagesHost=document.getElementById('chartPages');
-    const scroll=document.getElementById('chartScroll');
-    activePages=buildPages(activeRange);
-    document.getElementById('pointInfo').classList.remove('show');
-    if(!ekData?.ok || !activePages.length){
-        pagesHost.innerHTML='<div class="ek-empty" style="flex:0 0 100%">Für diesen Zeitraum sind noch keine geloggten Daten vorhanden.</div>';
-        document.getElementById('rangeTitle').textContent='Keine Daten';
-        updateVisibleSummary(null);return;
-    }
-    pagesHost.innerHTML=activePages.map((p,i)=>`<div class="ek-chart-page">${svgForPage(p,activeRange,i)}</div>`).join('');
-    pagesHost.querySelectorAll('.ek-hit').forEach(el=>el.addEventListener('click',()=>showPoint(Number(el.dataset.page),Number(el.dataset.point))));
-    requestAnimationFrame(()=>{
-        currentPageIndex=activePages.length-1;
-        scroll.scrollLeft=Math.max(0,scroll.scrollWidth-scroll.clientWidth);
-        updateCurrentPage();
-    });
+    activePages=buildPages(activeRange);pointInfo.classList.remove('show');
+    if(!ekData?.ok||!activePages.length){chartPages.innerHTML='<div class="ek-empty" style="flex:0 0 100%">Keine geloggten Daten für diesen Zeitraum.</div>';rangeTitle.textContent='Keine Daten';updateVisibleSummary(null);return}
+    chartPages.innerHTML=activePages.map((p,i)=>`<div class="ek-chart-page">${svgForPage(p,activeRange,i)}</div>`).join('');
+    chartPages.querySelectorAll('.ek-hit').forEach(el=>el.addEventListener('click',()=>showPoint(Number(el.dataset.page),Number(el.dataset.point))));
+    requestAnimationFrame(()=>{currentPageIndex=activePages.length-1;chartScroll.scrollLeft=Math.max(0,chartScroll.scrollWidth-chartScroll.clientWidth);updateCurrentPage()});
 }
-function totalsForPage(page){
-    if(!page)return {grid:0,feed:0,gridEuro:0,feedEuro:0,balance:0};
-    const grid=page.points.reduce((s,d)=>s+num(d.grid),0),feed=page.points.reduce((s,d)=>s+num(d.feed),0);
-    const gridEuro=grid*num(ekData?.prices?.grid),feedEuro=feed*num(ekData?.prices?.feed);
-    return {grid,feed,gridEuro,feedEuro,balance:feedEuro-gridEuro};
-}
-function updateVisibleSummary(page){
-    if(!page){document.getElementById('visGrid').textContent='—';document.getElementById('visFeed').textContent='—';document.getElementById('visBalance').textContent='—';return;}
-    const t=totalsForPage(page);
-    document.getElementById('visGrid').textContent=kwh(t.grid);document.getElementById('visGridEuro').textContent=euro(t.gridEuro);
-    document.getElementById('visFeed').textContent=kwh(t.feed);document.getElementById('visFeedEuro').textContent=euro(t.feedEuro);
-    document.getElementById('visBalance').textContent=signedEuro(t.balance);
-}
-function updateCurrentPage(){
-    if(!activePages.length)return;
-    const scroll=document.getElementById('chartScroll');
-    const width=Math.max(1,scroll.clientWidth);
-    currentPageIndex=Math.max(0,Math.min(activePages.length-1,Math.round(scroll.scrollLeft/width)));
-    const page=activePages[currentPageIndex];
-    document.getElementById('rangeTitle').textContent=page.title;
-    updateVisibleSummary(page);
-    const last=activePages.length-1;
-    document.getElementById('scrollHint').textContent=activePages.length<=1?'Keine älteren Werte vorhanden':(currentPageIndex===last?'← ältere Werte':(currentPageIndex===0?'Aktuell →':'← noch älter · Aktuell →'));
-}
-function showPoint(pageIndex,pointIndex){
-    const d=activePages?.[pageIndex]?.points?.[pointIndex];if(!d)return;
-    const g=num(d.grid),f=num(d.feed),ge=g*num(ekData?.prices?.grid),fe=f*num(ekData?.prices?.feed),bal=fe-ge;
-    const host=document.getElementById('pointInfo');
-    host.innerHTML=`<strong>${labelForPoint(d,activeRange)}</strong><div class="ek-point-grid"><span><small>Netzbezug</small>${kwh(g)} · ${euro(ge)}</span><span><small>Einspeisung</small>${kwh(f)} · ${euro(fe)}</span><span><small>Energiebilanz</small>${signedEuro(bal)}</span></div>`;
-    host.classList.add('show');
-}
-
+function totalsForPage(page){if(!page)return{grid:0,feed:0,gridEuro:0,feedEuro:0,balance:0};const grid=page.points.reduce((s,d)=>s+num(d.grid),0),feed=page.points.reduce((s,d)=>s+num(d.feed),0),gridEuro=grid*num(ekData?.prices?.grid),feedEuro=feed*num(ekData?.prices?.feed);return{grid,feed,gridEuro,feedEuro,balance:feedEuro-gridEuro}}
+function updateVisibleSummary(page){if(!page){visGrid.textContent=visFeed.textContent=visBalance.textContent='—';visGridEuro.textContent=visFeedEuro.textContent='—';return}const t=totalsForPage(page);visGrid.textContent=kwh(t.grid);visGridEuro.textContent=euro(t.gridEuro);visFeed.textContent=kwh(t.feed);visFeedEuro.textContent=euro(t.feedEuro);visBalance.textContent=signedEuro(t.balance)}
+function updateCurrentPage(){if(!activePages.length)return;const width=Math.max(1,chartScroll.clientWidth);currentPageIndex=Math.max(0,Math.min(activePages.length-1,Math.round(chartScroll.scrollLeft/width)));const p=activePages[currentPageIndex];rangeTitle.textContent=p.title;updateVisibleSummary(p);const last=activePages.length-1;scrollHint.textContent=activePages.length<=1?'Keine älteren Werte':currentPageIndex===last?'← ältere Werte':currentPageIndex===0?'Aktuell →':'← älter · Aktuell →'}
+function showPoint(pi,di){const d=activePages?.[pi]?.points?.[di];if(!d)return;const g=num(d.grid),f=num(d.feed),ge=g*num(ekData?.prices?.grid),fe=f*num(ekData?.prices?.feed);pointInfo.innerHTML=`<strong>${labelForPoint(d,activeRange)}</strong><div class="ek-point-grid"><span><small>Netzbezug</small>${kwh(g)} · ${euro(ge)}</span><span><small>Einspeisung</small>${kwh(f)} · ${euro(fe)}</span><span><small>Energiebilanz</small>${signedEuro(fe-ge)}</span></div>`;pointInfo.classList.add('show')}
 function renderYear(){
-    if(!ekData?.ok)return;
-    const y=ekData.summary?.year||{},p=ekData.yearProjection||{},year=new Date((ekData.updated||Date.now()/1000)*1000).getFullYear();
-    const feed=y.feed||{},grid=y.grid||{};
-    document.getElementById('yearTitle').textContent=`Jahresrechnung ${year}`;
-    document.getElementById('yearFeedActual').innerHTML=`${kwh(feed.kwh)}<small>${euro(feed.euro)}</small>`;
-    document.getElementById('yearGridActual').innerHTML=`${kwh(grid.kwh)}<small>${euro(grid.euro)}</small>`;
-    document.getElementById('yearFeedForecast').innerHTML=`${kwh(p.feedKWh)}<small>${euro(p.feedEuro)}</small>`;
-    document.getElementById('yearGridForecast').innerHTML=`${kwh(p.gridKWh)}<small>${euro(p.gridEuro)}</small>`;
-    document.getElementById('yearBalanceActual').textContent=signedEuro(num(feed.euro)-num(grid.euro));
-    document.getElementById('yearBalanceForecast').textContent=signedEuro(p.balanceEuro);
-    const method=p.provisional?'Vorläufige Hochrechnung aus dem bisher erfassten Zeitraum':'Saisonale Hochrechnung aus vorhandenen Vergleichsmonaten';
-    document.getElementById('projectionMethod').textContent=method;
-    const missing=(p.missingMonths||[]);const m=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-    document.getElementById('yearNote').textContent=p.provisional
-        ? `${method}. Fehlende Vergleichsmonate: ${missing.length?missing.map(x=>m[x-1]).join(', '):'keine Angabe'}. Winter/Sommer werden automatisch saisonal berücksichtigt, sobald genügend Vergleichsdaten vorhanden sind.`
-        : `${method}. Dadurch werden Winter- und Sommermonate getrennt berücksichtigt.`;
+    if(!ekData?.ok)return;const y=ekData.summary?.year||{},p=ekData.yearProjection||{},year=new Date((ekData.updated||Date.now()/1000)*1000).getFullYear(),feed=y.feed||{},grid=y.grid||{};
+    yearTitle.textContent=`Jahresrechnung ${year}`;
+    yearFeedActual.innerHTML=`${kwh(feed.kwh)}<small>${euro(feed.euro)}</small>`;yearGridActual.innerHTML=`${kwh(grid.kwh)}<small>${euro(grid.euro)}</small>`;
+    yearFeedForecast.innerHTML=`${kwh(p.feedKWh)}<small>${euro(p.feedEuro)}</small>`;yearGridForecast.innerHTML=`${kwh(p.gridKWh)}<small>${euro(p.gridEuro)}</small>`;
+    yearBalanceActual.textContent=signedEuro(num(feed.euro)-num(grid.euro));yearBalanceForecast.textContent=signedEuro(p.balanceEuro);
+    const missing=(p.missingMonths||[]),m=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    projectionMethod.textContent=p.provisional?`Vorläufig · Vergleich fehlt: ${missing.length?missing.map(x=>m[x-1]).join(', '):'—'}`:'Saisonal aus Vergleichsmonaten';
+    projectionMethod.title=p.provisional?'Vorläufige Hochrechnung aus bisher erfassten Daten. Winter/Sommer werden automatisch saisonal berücksichtigt, sobald genügend Vergleichsdaten vorhanden sind.':'Saisonale Hochrechnung aus vorhandenen Vergleichsmonaten.';
 }
-function renderCoverage(){
-    if(!ekData?.ok)return;
-    const hs=ekData.historySources||{},parts=[];
-    if(hs.grid?.logged)parts.push(`Netzbezug-Historie: ID ${hs.grid.id} ab ${fmtDate(hs.grid.first)}`);
-    if(hs.feed?.logged)parts.push(`Einspeisung-Historie: ID ${hs.feed.id} ab ${fmtDate(hs.feed.first)}`);
-    parts.push('Tag: bis 7 Tage zurück · Woche/30 Tage: bis ca. 400 Tage zurück scrollen');
-    document.getElementById('coverageNote').textContent=parts.join(' · ');
-}
-function renderAll(){
-    if(!ekData?.ok){document.getElementById('chartPages').innerHTML='<div class="ek-empty">Keine Daten verfügbar.</div>';return;}
-    document.getElementById('updatedText').textContent='Aktualisiert: '+new Date(ekData.updated*1000).toLocaleString('de-DE');
-    renderTables();renderYear();renderCoverage();renderChart();
-}
-document.querySelectorAll('.ek-tab').forEach(btn=>btn.addEventListener('click',()=>{
-    activeRange=btn.dataset.range;
-    document.querySelectorAll('.ek-tab').forEach(b=>b.classList.toggle('active',b===btn));
-    renderChart();
-}));
-document.getElementById('jumpLatest').addEventListener('click',()=>{
-    const scroll=document.getElementById('chartScroll');
-    scroll.scrollTo({left:Math.max(0,scroll.scrollWidth-scroll.clientWidth),behavior:'smooth'});
-});
-document.getElementById('chartScroll').addEventListener('scroll',()=>{
-    clearTimeout(scrollTimer);scrollTimer=setTimeout(updateCurrentPage,90);
-},{passive:true});
-if(typeof ResizeObserver!=='undefined'){new ResizeObserver(()=>{clearTimeout(scrollTimer);scrollTimer=setTimeout(updateCurrentPage,80)}).observe(document.getElementById('chartScroll'));}
+function adaptDetail(){const w=ekShell.clientWidth,h=ekShell.clientHeight;let u=Math.min(1.08,Math.max(.72,Math.min(w/1280,h/760)));ekShell.style.setProperty('--u',u.toFixed(3))}
+function renderAll(){if(!ekData?.ok){chartPages.innerHTML='<div class="ek-empty">Keine Daten verfügbar.</div>';return}updatedText.textContent='Aktualisiert: '+new Date(ekData.updated*1000).toLocaleString('de-DE');renderTables();renderYear();renderChart();adaptDetail()}
+document.querySelectorAll('.ek-tab').forEach(btn=>btn.addEventListener('click',()=>{activeRange=btn.dataset.range;document.querySelectorAll('.ek-tab').forEach(b=>b.classList.toggle('active',b===btn));renderChart()}));
+jumpLatest.addEventListener('click',()=>chartScroll.scrollTo({left:Math.max(0,chartScroll.scrollWidth-chartScroll.clientWidth),behavior:'smooth'}));
+chartScroll.addEventListener('scroll',()=>{clearTimeout(scrollTimer);scrollTimer=setTimeout(updateCurrentPage,80)},{passive:true});
+if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>{adaptDetail();clearTimeout(scrollTimer);scrollTimer=setTimeout(updateCurrentPage,80)}).observe(ekShell);else window.addEventListener('resize',adaptDetail);
 renderAll();
 </script>

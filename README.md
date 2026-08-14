@@ -1,4 +1,10 @@
-# Energie & Kosten – V1 BUILD6
+# Energie & Kosten – V1 BUILD7
+
+## BUILD7
+- Tablet-Layout neu: dunkle adaptive Kachel und Vollbild-Detailansicht ohne vertikales Scrollen im 10-Zoll-Querformat.
+- Auto-Skalierung des Inhalts anhand der realen Kachel-/Fenstergröße.
+- Diagramm oben, vier kompakte Karten unten; horizontales Scrollen im Diagramm bleibt erhalten.
+
 
 IP-Symcon 9.0 Modul von **JZCG**.
 
