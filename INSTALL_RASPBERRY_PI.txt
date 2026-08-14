@@ -1,15 +1,15 @@
-ENERGIE & KOSTEN – V1 BUILD7 (Raspberry Pi / IP-Symcon 9.0)
+ENERGIE & KOSTEN – V1 BUILD9 (Raspberry Pi / IP-Symcon 9.0)
 
 1) Datensicherung erstellen.
-2) Vorhandenen Ordner /var/lib/symcon/modules/EnergieKosten durch BUILD7 ersetzen.
+2) Vorhandenen Ordner /var/lib/symcon/modules/EnergieKosten durch BUILD9 ersetzen.
 3) Prüfen:
    /var/lib/symcon/modules/EnergieKosten/library.json
    /var/lib/symcon/modules/EnergieKosten/EnergieKosten/module.php
    /var/lib/symcon/modules/EnergieKosten/EnergieKosten/module.html
    /var/lib/symcon/modules/EnergieKosten/EnergieKosten/detail.html
-4) Symcon neu starten.
+4) Symcon neu starten bzw. das Modul neu laden.
 5) Bestehende Instanz „Energie Kosten“ öffnen und einmal „Änderungen übernehmen“.
-6) Danach sollte unter der Instanz eine neue String-Variable „Energie Detail“ vorhanden sein.
-7) Kleine Kachel antippen: Sie muss jetzt „Energie Detail“ maximiert öffnen.
+6) Die vorhandene Kachel kann bestehen bleiben. BUILD9 erkennt ihre verfügbare Breite/Höhe und wählt automatisch das passende Raster-Layout.
+7) Kleine Kachel antippen: „Energie Detail“ muss maximiert öffnen.
 
 Bestehende Solar-/Heizstab-Skripte während der Testphase NICHT löschen.

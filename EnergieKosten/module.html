@@ -3,99 +3,189 @@
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 :root{
   --ek-text:var(--content-color,#fff);
-  --ek-muted:color-mix(in srgb,var(--content-color,#fff) 62%,transparent);
-  --ek-soft:color-mix(in srgb,var(--content-color,#fff) 8%,transparent);
-  --ek-soft-strong:color-mix(in srgb,var(--content-color,#fff) 12%,transparent);
-  --ek-border:color-mix(in srgb,var(--content-color,#fff) 22%,transparent);
+  --ek-muted:color-mix(in srgb,var(--content-color,#fff) 60%,transparent);
+  --ek-faint:color-mix(in srgb,var(--content-color,#fff) 7%,transparent);
+  --ek-border:color-mix(in srgb,var(--content-color,#fff) 17%,transparent);
   --ek-accent:var(--accent-color,#3478f6);
   --ek-grid:#d9534f;
   --ek-feed:#2f9e62;
   --ek-heat:#e28b2d;
 }
 button{font:inherit}
-.ek-wrap{
-  position:relative;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden;
-  color:var(--ek-text);background:transparent;padding:.42em .48em .34em;font-size:12px;
-}
-.ek-inner{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:.34em;min-width:0;min-height:0}
+.ek-wrap{position:relative;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden;color:var(--ek-text);background:transparent;font-size:12px;padding:.46em .54em .40em}
+.ek-inner{height:100%;min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:.30em}
 .ek-head{display:flex;align-items:center;justify-content:space-between;gap:.45em;min-width:0}
-.ek-title{font-size:1.28em;line-height:1.05;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ek-period{flex:0 0 auto;font-size:.76em;line-height:1;padding:.34em .64em;border:1px solid var(--ek-border);border-radius:999px;color:var(--ek-muted);background:var(--ek-soft);white-space:nowrap}
-.ek-list{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:.28em;min-height:0}
-.ek-row{display:grid;grid-template-columns:.80em minmax(0,1fr) auto;align-items:center;column-gap:.55em;min-width:0;min-height:0;padding:.28em .46em;border:1px solid var(--ek-border);border-radius:.72em;background:var(--ek-soft)}
-.ek-dot{width:.60em;height:.60em;border-radius:50%;justify-self:center}
-.ek-dot.grid{background:var(--ek-grid)}.ek-dot.feed{background:var(--ek-feed)}.ek-dot.heat{background:var(--ek-heat)}
-.ek-label{font-size:.90em;color:var(--ek-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ek-title{font-size:1.15em;line-height:1.05;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ek-period{flex:0 0 auto;font-size:.70em;line-height:1;padding:.30em .54em;border:1px solid var(--ek-border);border-radius:999px;color:var(--ek-muted);background:var(--ek-faint);white-space:nowrap}
+.ek-list{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));min-width:0;min-height:0}
+.ek-row{display:grid;grid-template-columns:.72em minmax(0,1fr) auto;align-items:center;column-gap:.52em;min-width:0;min-height:0;padding:.18em .10em;border-bottom:1px solid var(--ek-border)}
+.ek-row:last-child{border-bottom:0}
+.ek-dot{width:.58em;height:.58em;border-radius:50%;justify-self:center}.ek-dot.grid{background:var(--ek-grid)}.ek-dot.feed{background:var(--ek-feed)}.ek-dot.heat{background:var(--ek-heat)}
+.ek-label{font-size:.82em;color:var(--ek-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ek-values{text-align:right;min-width:0;font-variant-numeric:tabular-nums;white-space:nowrap}
-.ek-main{font-size:1.34em;line-height:1;font-weight:900;letter-spacing:.01em}
-.ek-sub{margin-top:.20em;font-size:.72em;line-height:1;color:var(--ek-muted);font-weight:600}
-.ek-foot{font-size:.66em;line-height:1;color:var(--ek-muted);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ek-main{font-size:1.30em;line-height:1;font-weight:800;letter-spacing:.005em}
+.ek-sub{margin-top:.18em;font-size:.66em;line-height:1;color:var(--ek-muted);font-weight:500}
+.ek-balance{font-size:.67em;line-height:1;color:var(--ek-muted);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ek-balance strong{color:var(--ek-text);font-weight:700}
 .ek-open{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;cursor:pointer;z-index:10}
-.ek-wrap.large{font-size:14px;padding:.48em .56em .40em}.ek-wrap.large .ek-main{font-size:1.42em}.ek-wrap.large .ek-title{font-size:1.34em}
-.ek-wrap.compact{padding:.30em .34em .24em}.ek-wrap.compact .ek-inner{gap:.22em}.ek-wrap.compact .ek-row{padding:.20em .34em;border-radius:.58em}.ek-wrap.compact .ek-main{font-size:1.25em}.ek-wrap.compact .ek-sub{font-size:.68em}
-.ek-wrap.mini{padding:.22em .26em .18em}.ek-wrap.mini .ek-foot{display:none}.ek-wrap.mini .ek-inner{gap:.14em}.ek-wrap.mini .ek-row{padding:.12em .24em;border-radius:.48em}.ek-wrap.mini .ek-title{font-size:1.14em}.ek-wrap.mini .ek-period{font-size:.69em;padding:.26em .48em}.ek-wrap.mini .ek-label{font-size:.82em}.ek-wrap.mini .ek-main{font-size:1.16em}.ek-wrap.mini .ek-sub{font-size:.63em;margin-top:.12em}
-.ek-wrap.nano{padding:.16em .18em}.ek-wrap.nano .ek-foot{display:none}.ek-wrap.nano .ek-inner{gap:.10em}.ek-wrap.nano .ek-head{gap:.20em}.ek-wrap.nano .ek-title{font-size:1.05em}.ek-wrap.nano .ek-period{font-size:.62em;padding:.20em .38em}.ek-wrap.nano .ek-row{grid-template-columns:.66em minmax(0,1fr) auto;column-gap:.30em;padding:.08em .16em;border-radius:.40em}.ek-wrap.nano .ek-label{font-size:.72em}.ek-wrap.nano .ek-main{font-size:1.02em}.ek-wrap.nano .ek-sub{font-size:.56em}
-.ek-wrap.micro .ek-label,.ek-wrap.micro .ek-foot{display:none}.ek-wrap.micro .ek-row{grid-template-columns:.60em minmax(0,1fr);padding:.06em .12em}.ek-wrap.micro .ek-values{grid-column:2;width:100%}.ek-wrap.micro .ek-title{font-size:.96em}.ek-wrap.micro .ek-period{font-size:.58em}.ek-wrap.micro .ek-main{font-size:.95em}.ek-wrap.micro .ek-sub{font-size:.53em}
+
+/* 1x1: nur eine Kennzahl gleichzeitig – dadurch bleibt sie aus normaler Entfernung lesbar. */
+.ek-wrap[data-grid="1x1"]{padding:.28em .30em .26em}
+.ek-wrap[data-grid="1x1"] .ek-inner{grid-template-rows:auto minmax(0,1fr);gap:.10em}
+.ek-wrap[data-grid="1x1"] .ek-title,.ek-wrap[data-grid="1x1"] .ek-balance{display:none}
+.ek-wrap[data-grid="1x1"] .ek-head{justify-content:flex-end}
+.ek-wrap[data-grid="1x1"] .ek-period{font-size:.62em;padding:.24em .42em}
+.ek-wrap[data-grid="1x1"] .ek-list{display:block;position:relative;min-height:0}
+.ek-wrap[data-grid="1x1"] .ek-row{display:none;position:absolute;inset:0;border:0;padding:.02em .08em;grid-template-columns:.70em minmax(0,1fr);grid-template-rows:auto 1fr;align-content:center;column-gap:.34em}
+.ek-wrap[data-grid="1x1"][data-metric="grid"] .ek-row[data-kind="grid"],
+.ek-wrap[data-grid="1x1"][data-metric="feed"] .ek-row[data-kind="feed"],
+.ek-wrap[data-grid="1x1"][data-metric="heat"] .ek-row[data-kind="heat"]{display:grid}
+.ek-wrap[data-grid="1x1"] .ek-dot{grid-column:1;grid-row:1;width:.62em;height:.62em;align-self:center}
+.ek-wrap[data-grid="1x1"] .ek-label{grid-column:2;grid-row:1;font-size:.72em;color:var(--ek-muted);align-self:center}
+.ek-wrap[data-grid="1x1"] .ek-values{grid-column:1/3;grid-row:2;text-align:center;align-self:center;white-space:normal}
+.ek-wrap[data-grid="1x1"] .ek-main{font-size:1.72em;line-height:.98}
+.ek-wrap[data-grid="1x1"] .ek-sub{font-size:.63em;margin-top:.24em}
+
+/* 1x2 / 1x3: schmale Hochformat-Kachel, drei Werte untereinander. */
+.ek-wrap[data-grid="1x2"],.ek-wrap[data-grid="1x3"]{padding:.34em .34em .28em}
+.ek-wrap[data-grid="1x2"] .ek-title,.ek-wrap[data-grid="1x3"] .ek-title{display:none}
+.ek-wrap[data-grid="1x2"] .ek-head,.ek-wrap[data-grid="1x3"] .ek-head{justify-content:flex-end}
+.ek-wrap[data-grid="1x2"] .ek-inner,.ek-wrap[data-grid="1x3"] .ek-inner{gap:.18em}
+.ek-wrap[data-grid="1x2"] .ek-balance{display:none}
+.ek-wrap[data-grid="1x2"] .ek-row,.ek-wrap[data-grid="1x3"] .ek-row{grid-template-columns:.64em minmax(0,1fr);grid-template-rows:auto auto;column-gap:.30em;padding:.16em .04em}
+.ek-wrap[data-grid="1x2"] .ek-dot,.ek-wrap[data-grid="1x3"] .ek-dot{grid-column:1;grid-row:1/3}
+.ek-wrap[data-grid="1x2"] .ek-label,.ek-wrap[data-grid="1x3"] .ek-label{grid-column:2;grid-row:1;font-size:.72em}
+.ek-wrap[data-grid="1x2"] .ek-values,.ek-wrap[data-grid="1x3"] .ek-values{grid-column:2;grid-row:2;text-align:left}
+.ek-wrap[data-grid="1x2"] .ek-main{font-size:1.16em}.ek-wrap[data-grid="1x2"] .ek-sub{font-size:.58em}
+.ek-wrap[data-grid="1x3"] .ek-main{font-size:1.28em}.ek-wrap[data-grid="1x3"] .ek-sub{font-size:.64em}
+
+/* 2x1 / 3x1: flache Querformat-Kachel, drei Spalten. */
+.ek-wrap[data-grid="2x1"],.ek-wrap[data-grid="3x1"]{padding:.26em .38em .24em}
+.ek-wrap[data-grid="2x1"] .ek-title,.ek-wrap[data-grid="3x1"] .ek-title,.ek-wrap[data-grid="2x1"] .ek-balance{display:none}
+.ek-wrap[data-grid="2x1"] .ek-inner,.ek-wrap[data-grid="3x1"] .ek-inner{grid-template-rows:auto minmax(0,1fr);gap:.10em}
+.ek-wrap[data-grid="2x1"] .ek-head,.ek-wrap[data-grid="3x1"] .ek-head{justify-content:flex-end}
+.ek-wrap[data-grid="2x1"] .ek-list,.ek-wrap[data-grid="3x1"] .ek-list{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr}
+.ek-wrap[data-grid="2x1"] .ek-row,.ek-wrap[data-grid="3x1"] .ek-row{display:grid;grid-template-columns:.60em minmax(0,1fr);grid-template-rows:auto 1fr;border-bottom:0;border-right:1px solid var(--ek-border);padding:.06em .30em;column-gap:.28em}
+.ek-wrap[data-grid="2x1"] .ek-row:last-child,.ek-wrap[data-grid="3x1"] .ek-row:last-child{border-right:0}
+.ek-wrap[data-grid="2x1"] .ek-dot,.ek-wrap[data-grid="3x1"] .ek-dot{grid-column:1;grid-row:1;align-self:center}
+.ek-wrap[data-grid="2x1"] .ek-label,.ek-wrap[data-grid="3x1"] .ek-label{grid-column:2;grid-row:1;font-size:.62em}
+.ek-wrap[data-grid="2x1"] .ek-values,.ek-wrap[data-grid="3x1"] .ek-values{grid-column:1/3;grid-row:2;text-align:center;align-self:center;white-space:normal}
+.ek-wrap[data-grid="2x1"] .ek-main{font-size:1.02em}.ek-wrap[data-grid="2x1"] .ek-sub{font-size:.50em}
+.ek-wrap[data-grid="3x1"] .ek-main{font-size:1.20em}.ek-wrap[data-grid="3x1"] .ek-sub{font-size:.58em}
+
+/* 2x2: vollständige Standard-Kachel, bewusst ruhig und ohne Karten-in-Karte-Optik. */
+.ek-wrap[data-grid="2x2"] .ek-main{font-size:1.34em}
+.ek-wrap[data-grid="2x2"] .ek-sub{font-size:.66em}
+.ek-wrap[data-grid="2x2"] .ek-balance{display:none}
+
+/* 2x3 / 3x3: mehr Höhe – größere Werte und Bilanz. */
+.ek-wrap[data-grid="2x3"],.ek-wrap[data-grid="3x3"]{padding:.52em .62em .42em}
+.ek-wrap[data-grid="2x3"] .ek-main,.ek-wrap[data-grid="3x3"] .ek-main{font-size:1.52em}
+.ek-wrap[data-grid="2x3"] .ek-sub,.ek-wrap[data-grid="3x3"] .ek-sub{font-size:.72em}
+.ek-wrap[data-grid="2x3"] .ek-label,.ek-wrap[data-grid="3x3"] .ek-label{font-size:.88em}
+.ek-wrap[data-grid="3x3"] .ek-title{font-size:1.24em}
+
+/* 3x2: breite Übersicht – drei gleichwertige Spalten. */
+.ek-wrap[data-grid="3x2"]{padding:.46em .58em .36em}
+.ek-wrap[data-grid="3x2"] .ek-inner{grid-template-rows:auto minmax(0,1fr) auto;gap:.24em}
+.ek-wrap[data-grid="3x2"] .ek-list{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr}
+.ek-wrap[data-grid="3x2"] .ek-row{display:grid;grid-template-columns:.66em minmax(0,1fr);grid-template-rows:auto 1fr;border-bottom:0;border-right:1px solid var(--ek-border);padding:.14em .54em;column-gap:.34em}
+.ek-wrap[data-grid="3x2"] .ek-row:last-child{border-right:0}
+.ek-wrap[data-grid="3x2"] .ek-dot{grid-column:1;grid-row:1;align-self:center}
+.ek-wrap[data-grid="3x2"] .ek-label{grid-column:2;grid-row:1;font-size:.78em}
+.ek-wrap[data-grid="3x2"] .ek-values{grid-column:1/3;grid-row:2;text-align:center;align-self:center;white-space:normal}
+.ek-wrap[data-grid="3x2"] .ek-main{font-size:1.48em}.ek-wrap[data-grid="3x2"] .ek-sub{font-size:.68em}
+
+/* Fallback für noch größere/breitere Raster: wie 3x2, aber mit mehr Luft. */
+.ek-wrap[data-grid="wide"]{padding:.55em .68em .44em}
+.ek-wrap[data-grid="wide"] .ek-list{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr}
+.ek-wrap[data-grid="wide"] .ek-row{border-bottom:0;border-right:1px solid var(--ek-border);padding:.18em .70em}.ek-wrap[data-grid="wide"] .ek-row:last-child{border-right:0}
+.ek-wrap[data-grid="wide"] .ek-main{font-size:1.58em}
 </style>
 
-<div class="ek-wrap" id="ekWrap">
+<div class="ek-wrap" id="ekWrap" data-grid="2x2" data-metric="grid">
   <div class="ek-inner">
     <div class="ek-head">
       <div class="ek-title">Energie &amp; Kosten</div>
-      <div class="ek-period" id="compactPeriod">Heute</div>
+      <div class="ek-period" id="compactPeriod">Heute ↗</div>
     </div>
     <div class="ek-list">
-      <div class="ek-row">
+      <div class="ek-row" data-kind="grid">
         <span class="ek-dot grid"></span><span class="ek-label">Netzbezug</span>
         <span class="ek-values"><div class="ek-main" id="cGridEuro">—</div><div class="ek-sub" id="cGrid">—</div></span>
       </div>
-      <div class="ek-row">
+      <div class="ek-row" data-kind="feed">
         <span class="ek-dot feed"></span><span class="ek-label">Einspeisung</span>
         <span class="ek-values"><div class="ek-main" id="cFeedEuro">—</div><div class="ek-sub" id="cFeed">—</div></span>
       </div>
-      <div class="ek-row">
+      <div class="ek-row" data-kind="heat">
         <span class="ek-dot heat"></span><span class="ek-label">Heizstab</span>
         <span class="ek-values"><div class="ek-main" id="cHeat">—</div><div class="ek-sub" id="cOil">—</div></span>
       </div>
     </div>
-    <div class="ek-foot">Antippen für Diagramm &amp; Prognose</div>
+    <div class="ek-balance" id="compactBalance">Energiebilanz <strong>—</strong></div>
   </div>
   <button class="ek-open" id="openDetails" aria-label="Energie-Diagramm und Prognose öffnen"></button>
 </div>
 
 <script>
 const EK_DETAIL_ID=__DETAIL_ID__;
-let ekData=__INITIAL_DATA__,compactIndex=0,compactTimer=null;
+let ekData=__INITIAL_DATA__,periodIndex=0,metricIndex=0,cycleTimer=null,currentGrid='2x2';
 const validNumber=n=>n!==null&&n!==''&&Number.isFinite(Number(n));
 const euro=n=>validNumber(n)?Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €':'—';
+const signedEuro=n=>validNumber(n)?(Number(n)>=0?'+':'')+Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €':'—';
 const kwh=n=>validNumber(n)?Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' kWh':'—';
 const liter=n=>validNumber(n)?Number(n).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' L Öl gespart':'—';
 const periods=()=>[{key:'today',label:'Heute'},{key:'month',label:'Monat'},{key:'year',label:'Jahr'}];
+const metrics=['grid','feed','heat'];
 function renderCompact(){
   if(!ekData?.ok||!ekData.summary)return;
-  const p=periods()[compactIndex%3],s=ekData.summary[p.key];if(!s)return;
-  compactPeriod.textContent=p.label;
+  const p=periods()[periodIndex%3],s=ekData.summary[p.key];if(!s)return;
+  compactPeriod.textContent=p.label+' ↗';
   cGridEuro.textContent=euro(s.grid.euro);cGrid.textContent=kwh(s.grid.kwh);
   cFeedEuro.textContent=euro(s.feed.euro);cFeed.textContent=kwh(s.feed.kwh);
   cHeat.textContent=kwh(s.heater.kwh);cOil.textContent=liter(s.heater.oilLiter);
+  compactBalance.innerHTML='Energiebilanz <strong>'+signedEuro(Number(s.feed.euro||0)-Number(s.grid.euro||0))+'</strong>';
+  ekWrap.dataset.metric=metrics[metricIndex%3];
 }
 function restartTimer(){
-  if(compactTimer)clearInterval(compactTimer);
+  if(cycleTimer)clearInterval(cycleTimer);
   const sec=Math.max(3,Math.min(60,Number(ekData?.cycleSeconds||8)));
-  compactTimer=setInterval(()=>{compactIndex=(compactIndex+1)%3;renderCompact()},sec*1000);
+  if(currentGrid==='1x1'){
+    const stepMs=Math.max(900,Math.round(sec*1000/3));
+    cycleTimer=setInterval(()=>{
+      metricIndex=(metricIndex+1)%3;
+      if(metricIndex===0)periodIndex=(periodIndex+1)%3;
+      renderCompact();
+    },stepMs);
+  }else{
+    metricIndex=0;
+    cycleTimer=setInterval(()=>{periodIndex=(periodIndex+1)%3;renderCompact()},sec*1000);
+  }
+}
+function classifyGrid(w,h){
+  const ratio=w/Math.max(1,h);
+  const rows=h<145?1:(h<250?2:3);
+  let cols=Math.round(ratio*rows);cols=Math.max(1,Math.min(3,cols));
+  if(rows===1&&cols===1&&ratio>1.35)cols=2;
+  if(rows===1&&ratio>2.35)cols=3;
+  if(cols===1&&rows===1&&ratio<.72) return '1x2';
+  if(cols===1&&rows===2&&ratio<.42) return '1x3';
+  if(cols===3&&rows===3&&ratio>1.45)return 'wide';
+  return `${cols}x${rows}`;
+}
+function fontForGrid(grid,w,h){
+  const base=Math.min(w/18.5,h/15.5);
+  const limits={"1x1":[9.2,12.2],"1x2":[9.0,12.5],"1x3":[9.5,13.5],"2x1":[8.7,12.2],"3x1":[9.0,13.0],"2x2":[9.5,14.0],"2x3":[10.0,15.0],"3x2":[10.0,15.0],"3x3":[10.5,15.5],"wide":[11.0,16.0]};
+  const [lo,hi]=limits[grid]||[9.5,15];return Math.max(lo,Math.min(hi,base));
 }
 function adapt(){
-  const r=ekWrap.getBoundingClientRect(),w=Math.max(1,r.width),h=Math.max(1,r.height),area=w*h;
-  const base=Math.max(8.4,Math.min(14.5,Math.min(w/21.5,h/18.0)));
-  ekWrap.style.fontSize=base.toFixed(2)+'px';
-  const micro=(w<150||h<112||area<16500);
-  const nano=!micro&&(w<190||h<145||area<25500);
-  const mini=!micro&&!nano&&(w<235||h<185||area<39000);
-  const large=!micro&&!nano&&!mini&&(w>=335&&h>=260&&area>=90000);
-  const compact=!micro&&!nano&&!mini&&!large&&(w<305||h<235||area<70000);
-  ekWrap.classList.toggle('micro',micro);ekWrap.classList.toggle('nano',nano);ekWrap.classList.toggle('mini',mini);ekWrap.classList.toggle('compact',compact);ekWrap.classList.toggle('large',large);
+  const r=ekWrap.getBoundingClientRect(),w=Math.max(1,r.width),h=Math.max(1,r.height),grid=classifyGrid(w,h);
+  const changed=grid!==currentGrid;currentGrid=grid;ekWrap.dataset.grid=grid;
+  ekWrap.style.fontSize=fontForGrid(grid,w,h).toFixed(2)+'px';
+  if(changed){metricIndex=0;renderCompact();restartTimer()}
 }
-function renderAll(){renderCompact();restartTimer();adapt()}
+function renderAll(){renderCompact();adapt();restartTimer()}
 function handleMessage(data){try{ekData=typeof data==='string'?JSON.parse(data):data}catch(e){ekData={ok:false}}renderAll()}
 window.handleMessage=handleMessage;
 openDetails.addEventListener('click',()=>{if(typeof openObject==='function'&&EK_DETAIL_ID>0)openObject(EK_DETAIL_ID)});

@@ -2,7 +2,7 @@
     "elements": [
         {
             "type": "Label",
-            "caption": "Energie & Kosten – V1 BUILD8. Symcon-Design: transparente, theme-adaptive Kachel mit echter Größenanpassung nach Breite, Höhe und Fläche; 10-Zoll-Detailansicht kompakt ohne vertikales Scrollen."
+            "caption": "Energie & Kosten – V1 BUILD9. Rasteradaptive Kachel: eigenes Layout für 1x1, 1x2/1x3, 2x1, 2x2, 3x1, 3x2, 2x3 und 3x3. Kleine Raster zeigen bewusst weniger statt alles winzig zu skalieren."
         },
         {
             "type": "ExpansionPanel",
@@ -103,7 +103,7 @@
         },
         {
             "type": "Label",
-            "caption": "BUILD8: Kachel übernimmt --content-color / --accent-color aus Symcon statt eines eigenen dunklen Hintergrunds. Auto-Größe arbeitet mit mehreren Stufen wie bei den bewährten Heizöl-/KI-Kacheln. Detailansicht nutzt Webinhalt ohne Zusatz-Padding, bleibt vertikal vollständig im sichtbaren Bereich und behält horizontales Wischen für ältere Diagrammwerte."
+            "caption": "BUILD9: Raster-Engine erkennt die verfügbare Kachelgeometrie aus Breite/Höhe und wählt dafür ein eigenes Layout. 1x1 zeigt nacheinander Netzbezug, Einspeisung und Heizstab; 2x1/3x1 nutzen drei Spalten; 2x2/2x3/3x3 zeigen die vollständige Übersicht. Symcon-Farben, Detailansicht, Archivdaten, Historie und Berechnungslogik aus BUILD8 bleiben erhalten."
         }
     ],
     "actions": [

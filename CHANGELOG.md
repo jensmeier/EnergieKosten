@@ -64,3 +64,11 @@
 
 ## V1 BUILD1
 - Erste Version.
+
+## V1 BUILD9
+- Rasteradaptive Kachel statt reinem Schrumpfen der Schrift.
+- Eigene Layouts für 1x1, 1x2/1x3, 2x1, 2x2, 3x1, 3x2, 2x3 und 3x3 bzw. sehr breite Kacheln.
+- 1x1 zeigt pro Zeitraum nacheinander Netzbezug, Einspeisung und Heizstab; der eingestellte Zeitraumwechsel bleibt erhalten.
+- Querformate 2x1/3x1 und 3x2 nutzen drei Spalten; größere Hoch-/Quadratformate zeigen die vollständige Übersicht.
+- Energiebilanz erscheint nur dort, wo genügend Platz vorhanden ist.
+- Keine Änderung an Mess-, Archiv-, Historien- oder Prognoselogik.

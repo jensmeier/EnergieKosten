@@ -1,31 +1,20 @@
-# Energie & Kosten – V1 BUILD8
-
-## BUILD8
-- Kleine Kachel übernimmt das native Symcon-Design statt eines eigenen dunklen Hintergrunds.
-- Responsive Größenstufen nach Breite, Höhe und Fläche; orientiert an den bewährten Heizöl-/KI-Kacheln.
-- Detailansicht ohne zusätzliches Webinhalt-Padding und mit kompakter 10-Zoll-Querformat-Anordnung ohne vertikales Scrollen.
-- Horizontales Wischen durch ältere Diagrammwerte bleibt erhalten.
-
-
-## BUILD7
-- Tablet-Layout neu: dunkle adaptive Kachel und Vollbild-Detailansicht ohne vertikales Scrollen im 10-Zoll-Querformat.
-- Auto-Skalierung des Inhalts anhand der realen Kachel-/Fenstergröße.
-- Diagramm oben, vier kompakte Karten unten; horizontales Scrollen im Diagramm bleibt erhalten.
-
+# Energie & Kosten – V1 BUILD9
 
 IP-Symcon 9.0 Modul von **JZCG**.
 
-## BUILD5
-- Kleine Kachel wechselt einstellbar zwischen Heute, Monat und Jahr.
-- Netzbezug / Einspeisung: Euro groß und fett, kWh kleiner darunter.
-- Heizstab: kWh groß und fett, gesparte Liter Heizöl kleiner darunter.
-- Responsive Auto-Größe für kleine und große Kacheln.
-- Eine zusätzliche String-Variable `Energie Detail` (Webinhalt) enthält die große Diagramm-/Prognoseansicht.
-- Antippen der Kachel öffnet `Energie Detail`.
-- Diagramm: Tag, Woche, letzte 30 Tage, Jahr.
-- Saisonale Jahreshochrechnung berücksichtigt vorhandene Monats-/Jahresdaten.
-- Bestehende Solar-/Heizstab-Skripte bleiben während der Testphase unverändert.
+## BUILD9
+- Rasteradaptive Kachel statt reinem Verkleinern der Schrift.
+- Eigene Layouts für typische Symcon-Rastergrößen: 1x1, 1x2/1x3, 2x1, 2x2, 3x1, 3x2, 2x3 und 3x3.
+- 1x1 zeigt bewusst nur eine Kennzahl gleichzeitig und wechselt innerhalb des eingestellten Zeitraums zwischen Netzbezug, Einspeisung und Heizstab.
+- 2x1/3x1 und 3x2 nutzen die Breite mit drei Spalten.
+- 2x2/2x3/3x3 zeigen die vollständige Übersicht mit Haupt- und Nebenwerten.
+- Energiebilanz wird nur eingeblendet, wenn genügend Platz vorhanden ist.
+- Symcon-Theme über `--content-color` / `--accent-color`, transparenter Hintergrund.
+- Detailansicht, Archivdaten, historische Diagramme und Jahreshochrechnung bleiben gegenüber BUILD8 unverändert.
+- Bestehende Solar-/Heizstab-Skripte und IDs werden nicht gelöscht oder verändert.
 
-
-## BUILD6
-Die Detailansicht ist horizontal wischbar und zeigt eine vereinfachte Jahresrechnung mit Energiebilanz (Einspeisevergütung minus Netzbezugskosten).
+## Bedienung
+- Die Kachel wechselt nach der eingestellten Zeit zwischen **Heute → Monat → Jahr**.
+- In 1x1 werden innerhalb dieses Zeitraums zusätzlich die drei Kennzahlen nacheinander gezeigt, sodass nichts unlesbar klein wird.
+- Antippen öffnet die separate Detailansicht `Energie Detail`.
+- Dort bleiben Tag / Woche / letzte 30 Tage / Jahr sowie das horizontale Zurückscrollen erhalten.
