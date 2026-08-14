@@ -2,7 +2,7 @@
     "elements": [
         {
             "type": "Label",
-            "caption": "Energie & Kosten – V1 BUILD7. Tablet-Optimierung: dunkle automatisch skalierende Kachel und kompakte Vollbildansicht ohne vertikales Scrollen auf 10-Zoll-Tablet im Querformat."
+            "caption": "Energie & Kosten – V1 BUILD8. Symcon-Design: transparente, theme-adaptive Kachel mit echter Größenanpassung nach Breite, Höhe und Fläche; 10-Zoll-Detailansicht kompakt ohne vertikales Scrollen."
         },
         {
             "type": "ExpansionPanel",
@@ -103,7 +103,7 @@
         },
         {
             "type": "Label",
-            "caption": "BUILD7: Kachel passt Schrift und Abstände dynamisch an die tatsächlich verfügbare Symcon-Kachelgröße an. Detailansicht nutzt die gesamte Bildschirmhöhe: Diagramm oben, vier kompakte Informationskarten unten. Kein vertikales Scrollen im Querformat; horizontales Wischen im Diagramm bleibt erhalten."
+            "caption": "BUILD8: Kachel übernimmt --content-color / --accent-color aus Symcon statt eines eigenen dunklen Hintergrunds. Auto-Größe arbeitet mit mehreren Stufen wie bei den bewährten Heizöl-/KI-Kacheln. Detailansicht nutzt Webinhalt ohne Zusatz-Padding, bleibt vertikal vollständig im sichtbaren Bereich und behält horizontales Wischen für ältere Diagrammwerte."
         }
     ],
     "actions": [

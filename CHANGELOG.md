@@ -1,3 +1,14 @@
+# BUILD8
+- Kleine Kachel übernimmt jetzt das Symcon-Theme über `--content-color` und `--accent-color`; eigener dunkler Verlauf, Außenrahmen und Schatten aus BUILD7 wurden entfernt.
+- Transparenter Kachelhintergrund wie bei der bewährten HeizölKachel; dezente Innenflächen werden nur aus der Symcon-Inhaltsfarbe gemischt.
+- Auto-Größe neu aufgebaut: Breite, Höhe und Fläche entscheiden zwischen micro / nano / mini / compact / normal / large; ResizeObserver und Orientation-Update bleiben aktiv.
+- Wertehierarchie unverändert: Netzbezug/Einspeisung Euro groß und fett, kWh kleiner; Heizstab kWh groß, Liter kleiner.
+- Detailansicht übernimmt ebenfalls Symcon-Farben statt eigener Light-/Dark-Palette.
+- Webinhalt `Energie Detail` wird ab BUILD8 ohne zusätzliches Symcon-Padding dargestellt; bestehende Instanzen werden in `ApplyChanges()` migriert.
+- Detailansicht nochmals verdichtet: kompakter Kopf, flachere Statistik-/Jahreskarten, adaptive short/very-short-Modi und kein vertikales Scrollen.
+- Bei schmalen Ansichten bleibt die Höhe stabil; die vier unteren Karten werden nötigenfalls horizontal statt vertikal umgebrochen.
+- Diagramm, geloggte Historie, Tag/Woche/30 Tage/Jahr, Balken-Details, Energiebilanz und Hochrechnung bleiben funktional unverändert.
+
 # BUILD7
 - Kleine Kachel komplett neu gestaltet: dunkle Karte passend zu den übrigen Tablet-Kacheln, kompakter Kopf „Energie“, Zeitraum-Chip und klarere Wertehierarchie.
 - Echte Auto-Größe innerhalb der von Symcon vorgegebenen Kachelfläche: Schrift, Abstände und Radien skalieren anhand von Breite und Höhe per ResizeObserver.

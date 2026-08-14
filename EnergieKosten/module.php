@@ -69,7 +69,7 @@ class EnergieKosten extends IPSModuleStrict
             [
                 'PRESENTATION' => VARIABLE_PRESENTATION_WEB_CONTENT,
                 'HTML_TYPE' => 0,
-                'PADDING' => true
+                'PADDING' => false
             ],
             20
         );
@@ -113,6 +113,17 @@ class EnergieKosten extends IPSModuleStrict
         }
 
         $heaterTotalID = $this->GetIDForIdent('HeaterTotalKWh');
+
+        // BUILD8: Webinhalt ohne zusätzlichen Symcon-Innenabstand, damit die
+        // 10-Zoll-Detailansicht die verfügbare Höhe vollständig nutzen kann.
+        $detailID = $this->GetIDForIdent('DetailHTML');
+        if ($detailID > 0 && IPS_VariableExists($detailID)) {
+            @IPS_SetVariableCustomPresentation($detailID, [
+                'PRESENTATION' => VARIABLE_PRESENTATION_WEB_CONTENT,
+                'HTML_TYPE' => 0,
+                'PADDING' => false
+            ]);
+        }
 
         if ($valid && $this->ReadPropertyBoolean('AutoArchive')) {
             $archiveID = $this->GetArchiveID();

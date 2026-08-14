@@ -1,4 +1,11 @@
-# Energie & Kosten – V1 BUILD7
+# Energie & Kosten – V1 BUILD8
+
+## BUILD8
+- Kleine Kachel übernimmt das native Symcon-Design statt eines eigenen dunklen Hintergrunds.
+- Responsive Größenstufen nach Breite, Höhe und Fläche; orientiert an den bewährten Heizöl-/KI-Kacheln.
+- Detailansicht ohne zusätzliches Webinhalt-Padding und mit kompakter 10-Zoll-Querformat-Anordnung ohne vertikales Scrollen.
+- Horizontales Wischen durch ältere Diagrammwerte bleibt erhalten.
+
 
 ## BUILD7
 - Tablet-Layout neu: dunkle adaptive Kachel und Vollbild-Detailansicht ohne vertikales Scrollen im 10-Zoll-Querformat.
